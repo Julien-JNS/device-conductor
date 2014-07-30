@@ -1,9 +1,9 @@
-package fr.jjj.sprite.access.rmi;
+package fr.jjj.conductor.access.rmi;
 
-import fr.jjj.sprite.access.ActivityAccess;
-import fr.jjj.sprite.activity.media.ActivityMedia;
-import fr.jjj.sprite.activity.media.MediaDevice;
-import fr.jjj.sprite.activity.media.MediaSource;
+import fr.jjj.conductor.access.ActivityAccess;
+import fr.jjj.conductor.activity.media.ActivityMedia;
+import fr.jjj.conductor.activity.media.MediaDevice;
+import fr.jjj.conductor.activity.media.MediaSource;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -14,15 +14,15 @@ import java.util.Iterator;
 /**
  * Created by Jaunais on 02/07/2014.
  */
-public class MediaActivityAccess extends ActivityAccess implements Serializable,MediaActivityAccessI {
+public class MediaActivityAccessRMIImpl extends ActivityAccess implements Serializable,MediaActivityAccessRMI {
 
 
-    public MediaActivityAccess()
+    public MediaActivityAccessRMIImpl()
     {
 
     }
 
-    public MediaActivityAccess(ActivityMedia mediaActivity)
+    public MediaActivityAccessRMIImpl(ActivityMedia mediaActivity)
     {
         super(mediaActivity);
     }
@@ -31,10 +31,11 @@ public class MediaActivityAccess extends ActivityAccess implements Serializable,
     public Collection<String> getMediaSourceList() throws RemoteException {
         Collection<String> labels=new ArrayList<String>();
         System.out.println("media activity="+activity);
-        Iterator<MediaSource> itSources=((ActivityMedia)activity).getMediaSources().iterator();
-        while(itSources.hasNext())
-        {
-            labels.add(itSources.next().getType());
+        if(activity!=null) {
+            Iterator<MediaSource> itSources = ((ActivityMedia) activity).getMediaSources().iterator();
+            while (itSources.hasNext()) {
+                labels.add(itSources.next().getType());
+            }
         }
         return labels;
     }

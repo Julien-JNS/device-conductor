@@ -1,4 +1,4 @@
-package fr.jjj.sprite.config;
+package fr.jjj.conductor.config.media;
 
 /**
  * Created by Jaunais on 30/06/2014.

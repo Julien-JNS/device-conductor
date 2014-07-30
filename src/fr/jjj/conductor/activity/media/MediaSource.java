@@ -1,4 +1,4 @@
-package fr.jjj.sprite.activity.media;
+package fr.jjj.conductor.activity.media;
 
 import java.io.Serializable;
 

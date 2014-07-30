@@ -1,4 +1,4 @@
-package fr.jjj.sprite.activity;
+package fr.jjj.conductor.activity;
 
 /**
  * Created by Jaunais on 01/07/2014.

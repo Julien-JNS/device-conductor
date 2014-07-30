@@ -1,11 +1,9 @@
-package fr.jjj.sprite.config;
+package fr.jjj.conductor.config;
 
 import com.google.common.io.Files;
 import com.google.gson.Gson;
-import com.google.gson.JsonStreamParser;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -13,7 +11,7 @@ import java.nio.charset.Charset;
 /**
  * Created by Jaunais on 28/06/2014.
  */
-public class SpriteConfig {
+public class ConductorConfig {
 
     private static final String CONFIG_FILE="config.json";
 
@@ -21,13 +19,13 @@ public class SpriteConfig {
 
     private MediaActivityConfig mediaActivityConfig;
 
-    public static SpriteConfig getConfig()
+    public static ConductorConfig getConfig()
     {
-        SpriteConfig config=null;
+        ConductorConfig config=null;
         File configFile=new File(CONFIG_FILE);
         try {
             String json=Files.toString(configFile, Charset.forName("UTF-8"));
-            config=new Gson().fromJson(json,SpriteConfig.class);
+            config=new Gson().fromJson(json,ConductorConfig.class);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

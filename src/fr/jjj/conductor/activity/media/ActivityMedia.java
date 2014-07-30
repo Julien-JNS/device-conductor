@@ -1,14 +1,13 @@
-package fr.jjj.sprite.activity.media;
+package fr.jjj.conductor.activity.media;
 
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  * Created by Jaunais on 26/06/2014.
  */
-public class ActivityMedia extends fr.jjj.sprite.activity.Activity{
+public class ActivityMedia extends fr.jjj.conductor.activity.Activity{
 
 
     private Collection<MediaSource> mediaSources;
@@ -19,6 +18,7 @@ public class ActivityMedia extends fr.jjj.sprite.activity.Activity{
     public ActivityMedia()
     {
         mediaSources=new ArrayList<MediaSource>();
+        mediaDevices=new ArrayList<MediaDevice>();
     }
 
     public ActivityMedia(Collection<MediaSource> mediaSources)
@@ -31,11 +31,16 @@ public class ActivityMedia extends fr.jjj.sprite.activity.Activity{
         mediaSources.add(mediaSource);
     }
 
+    public void addMediaDevice(MediaDevice mediaDevice)
+    {
+        mediaDevices.add(mediaDevice);
+    }
+
     public Collection<MediaSource> getMediaSources() {
         return mediaSources;
     }
 
-    public Collection<MediaDevice> getMediaDevices() throws RemoteException {
+    public Collection<MediaDevice> getMediaDevices() {
         return mediaDevices;
     }
 }

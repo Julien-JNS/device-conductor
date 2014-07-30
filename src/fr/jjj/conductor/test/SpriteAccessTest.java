@@ -1,10 +1,9 @@
-package fr.jjj.sprite.test;
+package fr.jjj.conductor.test;
 
-import fr.jjj.sprite.access.rmi.MediaActivityAccessI;
-import fr.jjj.sprite.access.rmi.SpriteAccessI;
-import fr.jjj.sprite.comm.ActivityMedia;
-import fr.jjj.sprite.config.NetworkConfig;
-import fr.jjj.sprite.config.SpriteConfig;
+import fr.jjj.conductor.access.rmi.ConductorAccessRMI;
+import fr.jjj.conductor.access.rmi.MediaActivityAccessRMI;
+import fr.jjj.conductor.config.ConductorConfig;
+import fr.jjj.conductor.config.NetworkConfig;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -18,17 +17,17 @@ public class SpriteAccessTest {
     {
         try {
             String name = "spriteAccess";
-            SpriteConfig config=SpriteConfig.getConfig();
+            ConductorConfig config= ConductorConfig.getConfig();
             NetworkConfig nwconfig=config.getNetworkConfig();
             Registry registry = LocateRegistry.getRegistry(nwconfig.getHost(), nwconfig.getPort());
 
-            SpriteAccessI spriteComm = (SpriteAccessI) registry.lookup(name);
+            ConductorAccessRMI spriteComm = (ConductorAccessRMI) registry.lookup(name);
 
-            MediaActivityAccessI am=spriteComm.getActivityMedia();
+            MediaActivityAccessRMI am=spriteComm.getActivityMedia();
             System.out.println("Media activity:" +am );
 
             System.out.println("Media sources:"+am.getMediaSourceList());
-
+            System.out.println("Media devices:"+am.getMediaDeviceList());
 
         } catch (Exception e) {
             System.err.println("ComputePi exception:");

@@ -1,8 +1,6 @@
-package fr.jjj.sprite.access;
+package fr.jjj.conductor.access;
 
-import fr.jjj.sprite.activity.Activity;
-
-import java.rmi.Remote;
+import fr.jjj.conductor.activity.Activity;
 
 /**
  * Created by Jaunais on 26/06/2014.

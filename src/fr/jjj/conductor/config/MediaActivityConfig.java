@@ -1,7 +1,8 @@
-package fr.jjj.sprite.config;
+package fr.jjj.conductor.config;
 
 
-import fr.jjj.sprite.config.media.MediaDeviceConfig;
+import fr.jjj.conductor.config.media.MediaDeviceConfig;
+import fr.jjj.conductor.config.media.MediaSourceConfig;
 
 import java.util.Collection;
 
