@@ -1,0 +1,20 @@
+{
+    "networkConfig": {
+        "host": "PC_PORTABLE",
+        "port": "4056"
+    },
+    "mediaActivityConfig": {
+        "mediaSources": [
+            {
+                "type": "directory",
+                "path": "
+            }
+        ],
+        "mediaDevices": [
+            {
+                "type": "audio"
+
+            }
+        ]
+    }
+}
