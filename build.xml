@@ -1,0 +1,68 @@
+<project name="device-conductor" default="dist" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+    <description>
+        simple example build file
+    </description>
+    <!-- set global properties for this build -->
+    <property name="src" location="src"/>
+    <property name="build" location="build"/>
+    <property name="dist"  location="dist"/>
+    <property name="gson_jar"  value="lib/gson-2.2.4.jar"/>
+    <property name="guava_jar"  value="lib/guava-17.0.jar"/>
+
+    <property name="ext_jars"  value="${gson_jar};${guava_jar}" />
+
+    <artifact:dependencies filesetId="extjars.fileset" useScope="runtime" pathId="extjars.classpath">
+        <dependency groupId="com.google.code.gson" artifactId="gson" version="2.2.4" />
+        <dependency groupId="com.google.guava" artifactId="guava" version="17.0"/>
+    </artifact:dependencies>
+
+    <target name="init">
+        <!-- Create the time stamp -->
+        <tstamp/>
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${build}/classes"/>
+        <mkdir dir="${build}/rmi-classes"/>
+    </target>
+
+    <target name="compile" depends="init"
+            description="compile the source " >
+        <!-- Compile the java code from ${src} into ${build} -->
+        <javac srcdir="${src}" destdir="${build}/classes" classpath="${ext_jars}" target="1.6">
+            <classpath refid="extjars.classpath" />
+        </javac>
+        <rmic base="${build}/classes" includes="**/*RMIImpl.class" destdir="${build}/rmi-classes"  />
+    </target>
+
+    <target name="dist" depends="compile"
+            description="generate the distribution" >
+        <!-- Create the distribution directory -->
+        <mkdir dir="${dist}/lib"/>
+
+        <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+        <jar jarfile="${dist}/lib/device-conductor.jar" basedir="${build}/classes"/>
+        <copy  toDir="${build}/rmi-classes">
+        <fileset dir="${build}/classes">
+            <include name="**/rmi/*I.class"/>
+        </fileset>
+        </copy>
+        <jar jarfile="${dist}/lib/device-conductor-rmi.jar" basedir="${build}/rmi-classes" />
+    </target>
+
+    <target name="upload" depends="dist"
+            description="upload lib on pi" >
+        <scp localFile="${dist}/lib/device-conductor.jar" remoteToDir="pi@192.168.0.49:/home/pi/device-conductor" password="raspberry" trust="true" />
+            <!--scp localFile="${gson_jar}" remoteToDir="pi@192.168.0.49:/home/pi/device-conductor" password="raspberry" trust="true" />
+            <scp localFile="${guava_jar}" remoteToDir="pi@192.168.0.49:/home/pi/device-conductor" password="raspberry" trust="true" /-->
+        <scp localFile="${guava_jar}" remoteToDir="pi@192.168.0.49:/home/pi/device-conductor" password="raspberry" trust="true" >
+            <fileset refid="extjars.fileset" />
+        </scp>
+            <scp localFile="${dist}/lib/device-conductor-rmi.jar" remoteToDir="pi@192.168.0.49:/home/pi/device-conductor-manager" password="raspberry" trust="true" />
+    </target>
+
+    <target name="clean"
+            description="clean up" >
+        <!-- Delete the ${build} and ${dist} directory trees -->
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+</project>
