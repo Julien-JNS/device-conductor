@@ -9,14 +9,14 @@ public class Starter {
 
     public static void main(String[] args) {
 
-        Conductor sprite=new ConductorFactory().getSprite();
+        ConductorImpl conductor=new ConductorFactory().getConductor();
 
 
-        System.out.println("test start getAM:"+sprite.getActivityMedia());
-
-        System.out.println("test start getAM.getMS:"+sprite.getActivityMedia().getMediaSources());
-
-        System.out.println("test start getAM.getD:"+sprite.getActivityMedia().getMediaDevices());
+//        System.out.println("test start getAM:"+conductor.getActivityMedia());
+//
+//        System.out.println("test start getAM.getMS:"+conductor.getActivityMedia().getMediaSources());
+//
+//        System.out.println("test start getAM.getD:"+conductor.getActivityMedia().getMediaDevices());
     }
 
 

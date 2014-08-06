@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Set;
 
 /**
  * Created by Jaunais on 28/06/2014.
@@ -15,9 +16,15 @@ public class ConductorConfig {
 
     private static final String CONFIG_FILE="config.json";
 
+    private String label;
+
     private NetworkConfig networkConfig;
 
-    private MediaActivityConfig mediaActivityConfig;
+    private Set<DeviceConfig> devices;
+
+    private Set<ResourceConfig> resources;
+
+    //private MediaActivityConfig mediaActivityConfig;
 
     public static ConductorConfig getConfig()
     {
@@ -35,11 +42,19 @@ public class ConductorConfig {
     return config;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
     public NetworkConfig getNetworkConfig() {
         return networkConfig;
     }
 
-    public MediaActivityConfig getMediaActivityConfig() {
-        return mediaActivityConfig;
+    public Set<DeviceConfig> getDeviceConfigs() {
+        return devices;
+    }
+
+    public Set<ResourceConfig> getResourceConfigs() {
+        return resources;
     }
 }

@@ -1,17 +1,17 @@
 package fr.jjj.conductor.access;
 
-import fr.jjj.conductor.Conductor;
+import fr.jjj.conductor.ConductorImpl;
 
 /**
  * Created by Jaunais on 01/07/2014.
  */
 public class ConductorAccess {
 
-    protected Conductor sprite;
+    protected ConductorImpl conductor;
 
-    protected ConductorAccess(Conductor sprite)
+    protected ConductorAccess(ConductorImpl conductor)
     {
-        this.sprite=sprite;
+        this.conductor =conductor;
     }
 
 }

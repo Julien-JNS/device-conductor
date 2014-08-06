@@ -2,15 +2,20 @@ package fr.jjj.conductor;
 
 
 import fr.jjj.conductor.access.AccessFactory;
+import fr.jjj.conductor.access.ConductorAccess;
 import fr.jjj.conductor.activity.media.ActivityMedia;
 import fr.jjj.conductor.activity.media.MediaDevice;
 import fr.jjj.conductor.activity.media.MediaSource;
 import fr.jjj.conductor.config.ConductorConfig;
 import fr.jjj.conductor.config.MediaActivityConfig;
-import fr.jjj.conductor.config.media.MediaDeviceConfig;
-import fr.jjj.conductor.config.media.MediaSourceConfig;
+import fr.jjj.conductor.config.DeviceConfig;
+import fr.jjj.conductor.config.ResourceConfig;
+import fr.jjj.conductor.model.Device;
+import fr.jjj.conductor.model.DeviceAudioOut;
+import fr.jjj.conductor.model.DeviceVideoIn;
 
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by Jaunais on 01/07/2014.
@@ -19,42 +24,63 @@ public class ConductorFactory {
 
     private ConductorConfig config;
 
-    private Conductor uniqueSprite;
+    private static ConductorImpl uniqueConductor;
+
+    private static ConductorAccess uniqueAccess;
 
     public ConductorFactory() {
-        config= ConductorConfig.getConfig();
+        config = ConductorConfig.getConfig();
 
     }
 
-    public Conductor getSprite() {
-        if(uniqueSprite==null) {
+    public ConductorImpl getConductor() {
+        if (uniqueConductor == null) {
 
-            uniqueSprite = new Conductor();
+            uniqueConductor = new ConductorImpl(config.getLabel());
 
+            Set<DeviceConfig> deviceConfigs = config.getDeviceConfigs();
+            Iterator<DeviceConfig> itDeviceConfig = deviceConfigs.iterator();
+            while (itDeviceConfig.hasNext()) {
+                DeviceConfig deviceConf = itDeviceConfig.next();
+                Device device = null;
 
-            MediaActivityConfig mediaConfig=config.getMediaActivityConfig();
-            if(mediaConfig!=null)
-            {
-
-                ActivityMedia mediaActivity=new ActivityMedia();
-                Iterator<MediaSourceConfig> itSourceConfigs=mediaConfig.getMediaSourceConfigs().iterator();
-                while(itSourceConfigs.hasNext())
-                {
-                    MediaSourceConfig mediaSourceConfig=itSourceConfigs.next();
-                    mediaActivity.addMediaSource(new MediaSource(mediaSourceConfig.getType()));
+                String type = deviceConf.getType();
+                if (type.equals("audio-out")) {
+                    device = new DeviceAudioOut(deviceConf.getLabel(), deviceConf.getBridge());
+                } else if (type.equals("video-in")) {
+                    device = new DeviceVideoIn(deviceConf.getLabel());
                 }
-                Iterator<MediaDeviceConfig> itDeviceConfigs=mediaConfig.getMediaDeviceConfigs().iterator();
-                while(itDeviceConfigs.hasNext())
-                {
-                    MediaDeviceConfig mediaDeviceConfig=itDeviceConfigs.next();
-                    mediaActivity.addMediaDevice(new MediaDevice(mediaDeviceConfig.getType()));
-                }
-                uniqueSprite.setActivity(IConductor.ActivityType.MEDIA,mediaActivity);
+                uniqueConductor.addDevice(device);
             }
 
+
+//            MediaActivityConfig mediaConfig=config.getMediaActivityConfig();
+//            if(mediaConfig!=null)
+//            {
+//
+//                ActivityMedia mediaActivity=new ActivityMedia();
+//                Iterator<ResourceConfig> itSourceConfigs=mediaConfig.getMediaSourceConfigs().iterator();
+//                while(itSourceConfigs.hasNext())
+//                {
+//                    ResourceConfig mediaSourceConfig=itSourceConfigs.next();
+//                    mediaActivity.addMediaSource(new MediaSource(mediaSourceConfig.getType()));
+//                }
+//                Iterator<DeviceConfig> itDeviceConfigs=mediaConfig.getMediaDeviceConfigs().iterator();
+//                while(itDeviceConfigs.hasNext())
+//                {
+//                    DeviceConfig mediaDeviceConfig=itDeviceConfigs.next();
+//                    mediaActivity.addMediaDevice(new MediaDevice(mediaDeviceConfig.getType()));
+//                }
+//                uniqueConductor.setActivity(Conductor.ActivityType.MEDIA,mediaActivity);
+//            }
+
             // ACCESS
-            new AccessFactory(config.getNetworkConfig()).getSpriteAccess(uniqueSprite);
+            if (uniqueAccess == null) {
+                System.out.println("creating access...");
+                uniqueAccess = new AccessFactory(config.getNetworkConfig()).getSpriteAccess(uniqueConductor);
+            }
         }
-        return uniqueSprite;
+        return uniqueConductor;
     }
+
 }

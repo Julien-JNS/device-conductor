@@ -32,9 +32,12 @@ public class MediaDevice {
 
     }
 
-    Type type;
+    private Type type;
 
-    public MediaDevice(String type) {
+    private String label;
+
+    public MediaDevice(String label, String type) {
+        this.label=label;
         this.type=Type.getType(type);
     }
 }

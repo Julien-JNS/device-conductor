@@ -1,6 +1,6 @@
 package fr.jjj.conductor.access;
 
-import fr.jjj.conductor.Conductor;
+import fr.jjj.conductor.ConductorImpl;
 import fr.jjj.conductor.access.rmi.ConductorAccessRMIImpl;
 import fr.jjj.conductor.config.NetworkConfig;
 
@@ -16,7 +16,7 @@ public class AccessFactory {
         this.config=networkConfig;
     }
 
-    public ConductorAccess getSpriteAccess(Conductor sprite)
+    public ConductorAccess getSpriteAccess(ConductorImpl sprite)
     {
         return new ConductorAccessRMIImpl(sprite, config.getHost(),config.getPort());
     }

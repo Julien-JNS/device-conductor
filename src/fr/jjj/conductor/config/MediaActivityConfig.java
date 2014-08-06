@@ -1,9 +1,6 @@
 package fr.jjj.conductor.config;
 
 
-import fr.jjj.conductor.config.media.MediaDeviceConfig;
-import fr.jjj.conductor.config.media.MediaSourceConfig;
-
 import java.util.Collection;
 
 /**
@@ -11,15 +8,15 @@ import java.util.Collection;
  */
 public class MediaActivityConfig {
 
-    Collection<MediaSourceConfig> mediaSources;
+    Collection<ResourceConfig> mediaSources;
 
-    Collection<MediaDeviceConfig> mediaDevices;
+    Collection<DeviceConfig> mediaDevices;
 
-    public Collection<MediaSourceConfig> getMediaSourceConfigs() {
+    public Collection<ResourceConfig> getMediaSourceConfigs() {
         return mediaSources;
     }
 
-    public Collection<MediaDeviceConfig> getMediaDeviceConfigs() {
+    public Collection<DeviceConfig> getMediaDeviceConfigs() {
         return mediaDevices;
     }
 }

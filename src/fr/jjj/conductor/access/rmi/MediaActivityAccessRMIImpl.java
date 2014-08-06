@@ -7,9 +7,7 @@ import fr.jjj.conductor.activity.media.MediaSource;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by Jaunais on 02/07/2014.
@@ -28,8 +26,8 @@ public class MediaActivityAccessRMIImpl extends ActivityAccess implements Serial
     }
 
     @Override
-    public Collection<String> getMediaSourceList() throws RemoteException {
-        Collection<String> labels=new ArrayList<String>();
+    public Set<String> getMediaSourceList() throws RemoteException {
+        Set<String> labels=new HashSet<String>();
         System.out.println("media activity="+activity);
         if(activity!=null) {
             Iterator<MediaSource> itSources = ((ActivityMedia) activity).getMediaSources().iterator();
@@ -41,8 +39,8 @@ public class MediaActivityAccessRMIImpl extends ActivityAccess implements Serial
     }
 
     @Override
-    public Collection<String> getMediaDeviceList() throws RemoteException {
-        Collection<String> labels=new ArrayList<String>();
+    public Set<String> getMediaDeviceList() throws RemoteException {
+        Set<String> labels=new HashSet<String>();
         Iterator<MediaDevice> itDevices=((ActivityMedia)activity).getMediaDevices().iterator();
         while(itDevices.hasNext())
         {

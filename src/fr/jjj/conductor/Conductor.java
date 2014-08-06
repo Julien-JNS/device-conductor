@@ -1,33 +1,25 @@
 package fr.jjj.conductor;
 
 
-import fr.jjj.conductor.activity.Activity;
-import fr.jjj.conductor.activity.media.ActivityMedia;
+import fr.jjj.conductor.model.Device;
 
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
 /**
- * Created by Jaunais on 26/06/2014.
+ * Created by Jaunais on 01/07/2014.
  */
-public class Conductor implements IConductor {
+public interface Conductor {
 
-    Map<ActivityType,Activity> activities;
-
-    protected Conductor() {
-    activities=new HashMap<ActivityType, Activity>();
+    enum ActivityType{
+        MEDIA,CAM;
     }
 
-    public void setActivity(ActivityType type, Activity activity)
-    {
-        activities.put(type,activity);
-    }
+    String getLabel();
 
-    @Override
-    public ActivityMedia getActivityMedia() {
-        return (ActivityMedia)activities.get(ActivityType.MEDIA);
-    }
+    Set<Device> getDevices();
+
+    void addDevice(Device device);
+
 
 
 }
