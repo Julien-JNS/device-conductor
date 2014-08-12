@@ -2,13 +2,18 @@ package fr.jjj.conductor.access.rmi;
 
 import fr.jjj.conductor.ConductorImpl;
 import fr.jjj.conductor.access.ConductorAccess;
+import fr.jjj.conductor.model.DeviceDesc;
 import fr.jjj.conductor.model.Device;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -16,6 +21,7 @@ import java.util.Set;
  */
 public class ConductorAccessRMIImpl extends ConductorAccess implements ConductorAccessRMI {
 
+    private Log log= LogFactory.getLog(this.getClass());
 
     private int port;
 
@@ -44,14 +50,32 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
     }
 
     @Override
-    public Set<Device> getDevices() throws RemoteException {
-        return conductor.getDevices();
+    public Set<DeviceDesc> getDeviceDescriptions() throws RemoteException {
+
+        Set<DeviceDesc> set=new HashSet<DeviceDesc>();
+        Iterator<Device> itDevice=conductor.getDevices().iterator();
+        while(itDevice.hasNext())
+        {
+            Device device=itDevice.next();
+            DeviceDesc deviceDesc=new DeviceDesc();
+            deviceDesc.setLabel(device.getLabel());
+            deviceDesc.setConductor(conductor.getLabel());
+            deviceDesc.setType(device.getType());
+            deviceDesc.setStatus(device.getStatus());
+            set.add(deviceDesc);
+        }
+        return set;
+    }
+
+    @Override
+    public DeviceAudioOutAccessRMI getDeviceAudioOutAccess(String deviceLabel) throws RemoteException {
+        return  (DeviceAudioOutAccessRMI) UnicastRemoteObject.exportObject(new DeviceAudioOutAccessRMIImpl(conductor.getDevice(deviceLabel)),port);
     }
 
 //    @Override
 //    public MediaActivityAccessRMI getActivityMedia() throws RemoteException {
 //       // System.out.println("Activity returned by RMI:"+ conductor.getActivityMedia());
-//        return null;//(MediaActivityAccessRMI) UnicastRemoteObject.exportObject(new MediaActivityAccessRMIImpl(conductor.getActivityMedia()),port);
+//        return (MediaActivityAccessRMI) UnicastRemoteObject.exportObject(new MediaActivityAccessRMIImpl(conductor.getActivityMedia()),port);
 //        //return conductor.getActivityMedia();
 //    }
 }

@@ -20,6 +20,8 @@ public interface Conductor {
 
     void addDevice(Device device);
 
+    Device getDevice(String deviceLabel);
+
 
 
 }

@@ -7,6 +7,6 @@ public class DeviceVideoIn extends Device{
 
 
     public DeviceVideoIn(String label) {
-        super(label);
+        super(label,"video-in");
     }
 }

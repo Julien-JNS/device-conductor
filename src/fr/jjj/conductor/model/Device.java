@@ -9,12 +9,23 @@ public abstract class Device implements Serializable{
 
     private String label;
 
-    public Device(String label)
+    private String type;
+
+    private String status;
+
+    public Device(String label, String type)
     {
         this.label=label;
+        this.type=type;
     }
 
     public String getLabel() {
         return label;
+    }
+
+    public String getType() {return type;}
+
+    public String getStatus() {
+        return status;
     }
 }
