@@ -32,6 +32,8 @@ public enum ConductorRegistry {
 
     Map<String, DeviceDesc> devices;
 
+    private List<RegistryListener> listeners;
+
     private ConductorRegistry() {
         conductorAccesses = new HashMap<String, ConductorAccessRMI>();
 
@@ -81,6 +83,8 @@ public enum ConductorRegistry {
             }
 
         }
+
+        fireConductorListChanged();
     }
 
     private void initData() {
@@ -144,5 +148,25 @@ public enum ConductorRegistry {
 
     public ConductorAccessRMI getConductorAccess(String conductorName) {
         return conductorAccesses.get(conductorName);
+    }
+
+    /** Listener Management **/
+    public void addListener(RegistryListener listener)
+    {
+        if(listeners==null)
+        {
+            listeners=new ArrayList<RegistryListener>();
+        }
+        listeners.add(listener);
+    }
+
+    private void fireConductorListChanged()
+    {
+        if(listeners!=null && !listeners.isEmpty()) {
+            Iterator<RegistryListener> it = listeners.iterator();
+            while (it.hasNext()) {
+                it.next().conductorListChanged();
+            }
+        }
     }
 }
