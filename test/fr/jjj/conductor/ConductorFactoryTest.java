@@ -2,6 +2,7 @@ package fr.jjj.conductor;
 
 import fr.jjj.conductor.model.Device;
 import fr.jjj.conductor.model.DeviceAudioOut;
+import fr.jjj.conductor.model.DeviceAudioOutTest;
 import fr.jjj.conductor.model.DeviceVideoIn;
 import org.junit.Before;
 import org.junit.Test;

@@ -15,6 +15,7 @@ public class StatusPresenter implements RegistryListener {
     private StatusView view;
 
     public StatusPresenter(StatusView view) {
+        this.view=view;
         ConductorRegistry.INSTANCE.addListener(this);
         update();
     }

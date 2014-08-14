@@ -60,10 +60,6 @@ public enum ConductorRegistry {
 
         while (it.hasNext()) {
             ConductorDesc conductorDesc=it.next();
-            String conductorLabel = conductorDesc.getLabel();
-            System.out.println("conductor label:" + conductorLabel);
-            conductorDesc.setLabel(conductorLabel);
-            conductorDescriptions.put(conductorLabel,conductorDesc);
 
             System.out.println("conductorDesc=" + conductorDesc);
 //	        if (System.getSecurityManager() == null) {
@@ -73,10 +69,12 @@ public enum ConductorRegistry {
                 String name = "conductorAccess";
                 Registry registry = LocateRegistry.getRegistry(conductorDesc.getHost(), conductorDesc.getPort());
                 log.info("rmi obj?");
-                ConductorAccessRMI spriteComm = (ConductorAccessRMI) registry.lookup(name);
-                System.out.println("rmi obj=" + spriteComm);
-                System.out.println("rmi obj label=" + spriteComm.getLabel());
-                conductorAccesses.put(conductorLabel, spriteComm);
+                ConductorAccessRMI conductorAccess = (ConductorAccessRMI) registry.lookup(name);
+                String conductorLabel = conductorAccess.getLabel();
+                System.out.println("conductor label (receive by RMI):" + conductorLabel);
+                conductorDesc.setLabel(conductorLabel);
+                conductorDescriptions.put(conductorLabel,conductorDesc);
+                conductorAccesses.put(conductorLabel, conductorAccess);
             } catch (Exception e) {
                 System.err.println("ComputePi exception:");
                 e.printStackTrace();

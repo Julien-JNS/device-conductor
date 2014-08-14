@@ -69,9 +69,9 @@
             <fileset dir="export"/>
         </scp>
         <scp localFile="${dist}/lib/device-conductor-rmi.jar"
-             remoteToDir="pi@192.168.0.49:/home/pi/device-conductor-manager" password="raspberry" trust="true"/>
+             remoteToDir="pi@192.168.0.49:/home/pi/device-conductor-manager/war/WEB-INF/lib" password="raspberry" trust="true"/>
         <scp localFile="${dist}/lib/device-conductor-manager.jar"
-             remoteToDir="pi@192.168.0.49:/home/pi/device-conductor-manager" password="raspberry" trust="true"/>
+             remoteToDir="pi@192.168.0.49:/home/pi/device-conductor-manager/war/WEB-INF/lib" password="raspberry" trust="true"/>
     </target>
 
     <target name="clean"
