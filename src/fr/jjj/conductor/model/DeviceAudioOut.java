@@ -12,6 +12,8 @@ public class DeviceAudioOut extends Device {
 
     private List<MediaItemDesc> queue;
 
+
+
     public DeviceAudioOut(String label,String bridge)
     {
         super(label,"audio-out");

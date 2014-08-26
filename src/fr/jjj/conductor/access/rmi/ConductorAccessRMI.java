@@ -4,6 +4,7 @@ import fr.jjj.conductor.model.DeviceDesc;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,5 +16,9 @@ public interface ConductorAccessRMI extends Remote{
 
     Set<DeviceDesc> getDeviceDescriptions() throws RemoteException;
 
+    Set<String> getMediaSources(String deviceLabel) throws RemoteException;
+
     DeviceAudioOutAccessRMI getDeviceAudioOutAccess(String deviceLabel) throws RemoteException;
+
+    List<String> getNavItems(String mediaSource, String reference) throws RemoteException;
 }

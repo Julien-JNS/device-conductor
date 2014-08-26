@@ -1,13 +1,23 @@
 package fr.jjj.conductormanager;
 
+import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import fr.jjj.conductor.access.rmi.ConductorAccessRMI;
 import fr.jjj.conductor.access.rmi.DeviceAccessRMI;
 import fr.jjj.conductor.access.rmi.DeviceAudioOutAccessRMI;
+import fr.jjj.conductor.config.ConductorConfig;
+import fr.jjj.conductor.config.NetworkConfig;
 import fr.jjj.conductor.model.DeviceDesc;
+import fr.jjj.conductormanager.config.ConductorManagerConfig;
 import fr.jjj.conductormanager.model.ConductorDesc;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -17,6 +27,8 @@ import java.util.*;
 public enum ConductorRegistry {
 
     INSTANCE;
+
+    private static final String CONFIG_FILE="config-manager.json";
 
     private Log log= LogFactory.getLog(this.getClass());
 
@@ -35,28 +47,39 @@ public enum ConductorRegistry {
     private List<RegistryListener> listeners;
 
     private ConductorRegistry() {
-        conductorAccesses = new HashMap<String, ConductorAccessRMI>();
-
-
         loadConfig();
 
         initComm();
 
         initData();
-
     }
 
     private void loadConfig() {
         predefinedConductors=new HashSet<ConductorDesc>();
         conductorDescriptions = new HashMap<String, ConductorDesc>();
-
-        ConductorDesc desc=new ConductorDesc("192.168.0.49", 4056);
-        predefinedConductors.add(desc);
+        ConductorManagerConfig config=null;
+        File configFile=new File(CONFIG_FILE);
+        try {
+            String json= Files.toString(configFile, Charset.forName("UTF-8"));
+            List<NetworkConfig> networkConfigs = new Gson().fromJson(json, new TypeToken<List<NetworkConfig>>() {}.getType());
+            Iterator<NetworkConfig> it=networkConfigs.iterator();
+            while(it.hasNext())
+            {
+                NetworkConfig nwc=it.next();
+                predefinedConductors.add(new ConductorDesc(nwc.getHost(),nwc.getPort()));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initComm() {
         System.out.println("INIT COMM...");
         Iterator<ConductorDesc> it = predefinedConductors.iterator();
+        conductorAccesses = new HashMap<String, ConductorAccessRMI>();
+        deviceAccesses=new HashMap<String, DeviceAccessRMI>();
 
         while (it.hasNext()) {
             ConductorDesc conductorDesc=it.next();
@@ -128,6 +151,7 @@ public enum ConductorRegistry {
     }
 
     public DeviceAudioOutAccessRMI getDeviceAudioOutAccess(String deviceLabel) {
+        log.info("Requesting access to audio device "+deviceLabel);
         DeviceAudioOutAccessRMI access = (DeviceAudioOutAccessRMI) deviceAccesses.get(deviceLabel);
         if (access == null) {
             String conductorLabel = devices.get(deviceLabel).getConductor();
@@ -140,12 +164,21 @@ public enum ConductorRegistry {
             }
             log.info("Access to device created:"+access);
         }
+        else
+        {
+            log.info("Access already established.");
+        }
         log.info("Returned access to device:"+access);
         return access;
     }
 
     public ConductorAccessRMI getConductorAccess(String conductorName) {
         return conductorAccesses.get(conductorName);
+    }
+
+    public ConductorAccessRMI getConductorAccessForDevice(String deviceLabel) {
+        String conductorLabel=devices.get(deviceLabel).getConductor();
+        return conductorAccesses.get(conductorLabel);
     }
 
     /** Listener Management **/

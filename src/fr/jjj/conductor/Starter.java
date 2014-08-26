@@ -14,7 +14,7 @@ public class Starter {
 
 //        System.out.println("test start getAM:"+conductor.getActivityMedia());
 //
-//        System.out.println("test start getAM.getMS:"+conductor.getActivityMedia().getMediaSources());
+//        System.out.println("test start getAM.getMS:"+conductor.getActivityMedia().getResources());
 //
 //        System.out.println("test start getAM.getD:"+conductor.getActivityMedia().getMediaDevices());
     }

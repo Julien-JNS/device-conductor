@@ -21,13 +21,17 @@ public class ConductorFactoryTest {
 
     public static final String[] DEVICE_LABELS = {"enceinte salon","webcam salon"};
 
+    public static final String[] RESOURCE_LABELS = {"Musique FREEBOX","Musique GOOGLE"};
+
+    public static final String FILESYSTEM_START="./tmp/freebox";
+
     public static final String CONFIG1 = "{'label':'"+CONDUCTOR_LABEL+"','networkConfig': {'host': '127.0.0.1','port': '4056'}," +
             "'devices': " +
             "[{'type': 'audio-out','label':'" + DEVICE_LABELS[0] + "','bridge':'omxplayer'}," +
             "{'type': 'video-in','label':'" + DEVICE_LABELS[1] + "','bridge': 'xxx'}]," +
             "'resources':" +
-            "[{'type': 'filesystem','label': 'Musique FREEBOX','default': '/home/pi/freebox/Musiques'}," +
-            "{'type': 'googlemusic','label': 'Musique GOOGLE','default': 'Maryse'" +
+            "[{'type': 'filesystem','label': '"+RESOURCE_LABELS[0]+"','start': '"+FILESYSTEM_START+"'}," +
+            "{'type': 'googlemusic','label': '"+RESOURCE_LABELS[1]+"','start': 'Maryse'" +
             "}]}";
 
     static public void initializeConfig() {

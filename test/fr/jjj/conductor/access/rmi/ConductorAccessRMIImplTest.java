@@ -9,9 +9,11 @@ import fr.jjj.conductor.config.NetworkConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Iterator;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -67,5 +69,19 @@ public class ConductorAccessRMIImplTest {
             }
         }
 
+    }
+
+    @Test
+    public void testGetNavItems()
+    {
+        List<String> items= null;
+        try {
+            items = testedAccess.getNavItems(ConductorFactoryTest.RESOURCE_LABELS[0],null);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        Iterator<String> it=items.iterator();
+        assertEquals("Check first file in FS start",it.next(),"test.tst");
     }
 }

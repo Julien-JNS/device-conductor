@@ -10,9 +10,7 @@ import fr.jjj.conductor.config.ConductorConfig;
 import fr.jjj.conductor.config.MediaActivityConfig;
 import fr.jjj.conductor.config.DeviceConfig;
 import fr.jjj.conductor.config.ResourceConfig;
-import fr.jjj.conductor.model.Device;
-import fr.jjj.conductor.model.DeviceAudioOut;
-import fr.jjj.conductor.model.DeviceVideoIn;
+import fr.jjj.conductor.model.*;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -29,7 +27,7 @@ public class ConductorFactory {
     private static ConductorAccess uniqueAccess;
 
     public ConductorFactory() {
-        config = ConductorConfig.getConfig();
+            config = ConductorConfig.getConfig();
 
     }
 
@@ -53,6 +51,20 @@ public class ConductorFactory {
                 uniqueConductor.addDevice(device);
             }
 
+            Set<ResourceConfig> resourceConfigs = config.getResourceConfigs();
+            Iterator<ResourceConfig> itResourceConfig = resourceConfigs.iterator();
+            while (itResourceConfig.hasNext()) {
+                ResourceConfig resourceConf = itResourceConfig.next();
+                Resource resource = null;
+
+                String type = resourceConf.getType();
+                if (type.equals("filesystem")) {
+                    resource = new ResourceFilesystem(resourceConf.getLabel(), resourceConf.getStart());
+                } else if (type.equals("googlemusic")) {
+                   resource = new Resource(resourceConf.getLabel());
+                }
+                uniqueConductor.addResource(resource);
+            }
 
 //            MediaActivityConfig mediaConfig=config.getMediaActivityConfig();
 //            if(mediaConfig!=null)

@@ -14,6 +14,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -72,10 +73,22 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
         return  (DeviceAudioOutAccessRMI) UnicastRemoteObject.exportObject(new DeviceAudioOutAccessRMIImpl(conductor.getDevice(deviceLabel)),port);
     }
 
-//    @Override
+    @Override
+    public Set<String> getMediaSources(String deviceLabel) throws RemoteException {
+        return conductor.getResources(deviceLabel);
+    }
+
+    //    @Override
 //    public MediaActivityAccessRMI getActivityMedia() throws RemoteException {
 //       // System.out.println("Activity returned by RMI:"+ conductor.getActivityMedia());
 //        return (MediaActivityAccessRMI) UnicastRemoteObject.exportObject(new MediaActivityAccessRMIImpl(conductor.getActivityMedia()),port);
 //        //return conductor.getActivityMedia();
 //    }
+
+
+    @Override
+    public List<String> getNavItems(String mediaSource, String reference) throws RemoteException {
+        log.info("Receive RMI request for nav items for media source '"+mediaSource+"' at "+reference);
+        return conductor.getNavItems(mediaSource,reference);
+    }
 }
