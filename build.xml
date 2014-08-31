@@ -6,10 +6,10 @@
     <property name="src" location="src"/>
     <property name="build" location="build"/>
     <property name="dist" location="dist"/>
-    <property name="gson_jar" value="lib/gson-2.2.4.jar"/>
+    <!--property name="gson_jar" value="lib/gson-2.2.4.jar"/>
     <property name="guava_jar" value="lib/guava-17.0.jar"/>
 
-    <property name="ext_jars" value="${gson_jar};${guava_jar}"/>
+    <property name="ext_jars" value="${gson_jar};${guava_jar}"/-->
 
     <artifact:dependencies filesetId="extjars.fileset" useScope="runtime" pathId="extjars.classpath">
         <dependency groupId="com.google.code.gson" artifactId="gson" version="2.2.4"/>
@@ -17,7 +17,7 @@
         <dependency groupId="commons-logging" artifactId="commons-logging" version="1.2"/>
     </artifact:dependencies>
 
-    <target name="init">
+    <target name="init" depends="clean" >
         <!-- Create the time stamp -->
         <tstamp/>
         <!-- Create the build directory structure used by compile -->
@@ -29,13 +29,21 @@
     <target name="compile" depends="init"
             description="compile the source ">
         <!-- Compile the java code from ${src} into ${build} -->
-        <javac srcdir="${src}" destdir="${build}/conductor/classes" classpath="${ext_jars}" target="1.6"
-               includes="**/conductor/**">
+
+        <!-- sourcepath="" is required to avoid default search -->
+        <javac sourcepath="" srcdir="${src}" destdir="${build}/conductor/classes" classpath="${ext_jars}" target="1.6"
+               includes="**/conductor/**/*.java">
             <classpath refid="extjars.classpath"/>
         </javac>
-        <javac srcdir="${src}" destdir="${build}/conductor-manager/classes" classpath="${ext_jars}" target="1.6"
-               includes="**/conductormanager/**">
+
+        <!-- sourcepath="" is required to avoid default search -->
+        <javac sourcepath="" srcdir="${src}" destdir="${build}/conductor-manager/classes" target="1.6" >
             <classpath refid="extjars.classpath"/>
+            <include name="**/conductormanager/**/*.java"/>
+            <include name="**/conductor/config/**/NetworkConfig.java"/>
+            <include name="**/conductor/**/rmi/*RMI.java"/>
+            <include name="**/conductor/**/model/**/DeviceDesc.java"/>
+            <include name="**/conductor/**/model/**/MediaItemDesc.java"/>
         </javac>
         <rmic base="${build}/conductor/classes" includes="**/*RMIImpl.class" destdir="${build}/conductor-rmi/classes"/>
     </target>
@@ -45,17 +53,23 @@
         <!-- Create the distribution directory -->
         <mkdir dir="${dist}/lib"/>
 
-        <jar jarfile="${dist}/lib/device-conductor.jar" basedir="${build}/conductor/classes"/>
+        <jar jarfile="${dist}/lib/device-conductor.jar" basedir="${build}/conductor/classes" update="true"/>
 
-        <jar jarfile="${dist}/lib/device-conductor-manager.jar" basedir="${build}/conductor-manager/classes"/>
+        <!--copy toDir="${build}/conductor-manager/classes">
+            <fileset dir="${build}/conductor/classes">
+                <include name="**/config/*.class"/>
+            </fileset>
+        </copy-->
+        <jar jarfile="${dist}/lib/device-conductor-manager.jar" basedir="${build}/conductor-manager/classes" update="true" />
 
-        <copy toDir="${build}/conductor-rmi/classes">
+        <!--copy toDir="${build}/conductor-rmi/classes">
             <fileset dir="${build}/conductor/classes">
                 <include name="**/rmi/*I.class"/>
                 <include name="**/model/*Desc.class"/>
             </fileset>
-        </copy>
-        <jar jarfile="${dist}/lib/device-conductor-rmi.jar" basedir="${build}/conductor-rmi/classes"/>
+        </copy-->
+        <jar jarfile="${dist}/lib/device-conductor-rmi.jar" basedir="${build}/conductor-rmi/classes" update="true" />
+
     </target>
 
     <target name="upload" depends="dist"
@@ -68,16 +82,18 @@
         <scp remoteToDir="pi@192.168.0.49:/home/pi/device-conductor" password="raspberry" trust="true">
             <fileset dir="export"/>
         </scp>
-        <scp localFile="${dist}/lib/device-conductor-rmi.jar"
-             remoteToDir="pi@192.168.0.49:/home/pi/device-conductor-manager/war/WEB-INF/lib" password="raspberry" trust="true"/>
-        <scp localFile="${dist}/lib/device-conductor-manager.jar"
-             remoteToDir="pi@192.168.0.49:/home/pi/device-conductor-manager/war/WEB-INF/lib" password="raspberry" trust="true"/>
+        <!--scp localFile="${dist}/lib/device-conductor-rmi.jar"
+             remoteToDir="pi@192.168.0.49:/home/pi/device-conductor-manager/war/WEB-INF/lib" password="raspberry" trust="true"/-->
+        <scp remoteToDir="pi@192.168.0.49:/home/pi/device-conductor-manager/war/WEB-INF/lib" password="raspberry" trust="true">
+            <fileset dir="${dist}/lib" includes="device-conductor-rmi.jar,device-conductor-manager.jar"/>
+            <fileset dir="export" includes="*gson*,*guava*"/>
+        </scp>
     </target>
 
-    <target name="clean"
-            description="clean up">
+    <target name="clean" description="clean up">
         <!-- Delete the ${build} and ${dist} directory trees -->
         <delete dir="${build}"/>
-        <delete dir="${dist}"/>
+        <delete dir="${dist}" />
     </target>
+
 </project>

@@ -6,10 +6,8 @@ import com.google.gson.reflect.TypeToken;
 import fr.jjj.conductor.access.rmi.ConductorAccessRMI;
 import fr.jjj.conductor.access.rmi.DeviceAccessRMI;
 import fr.jjj.conductor.access.rmi.DeviceAudioOutAccessRMI;
-import fr.jjj.conductor.config.ConductorConfig;
 import fr.jjj.conductor.config.NetworkConfig;
 import fr.jjj.conductor.model.DeviceDesc;
-import fr.jjj.conductormanager.config.ConductorManagerConfig;
 import fr.jjj.conductormanager.model.ConductorDesc;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,7 +55,6 @@ public enum ConductorRegistry {
     private void loadConfig() {
         predefinedConductors=new HashSet<ConductorDesc>();
         conductorDescriptions = new HashMap<String, ConductorDesc>();
-        ConductorManagerConfig config=null;
         File configFile=new File(CONFIG_FILE);
         try {
             String json= Files.toString(configFile, Charset.forName("UTF-8"));

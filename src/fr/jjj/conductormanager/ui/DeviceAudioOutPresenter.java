@@ -32,8 +32,8 @@ public class DeviceAudioOutPresenter {
 
     public List<MediaItemDesc> getQueue() {
         log.info("Queue requested for audio device " + deviceLabel + "...");
-        DeviceAudioOutAccessRMI access = ConductorRegistry.INSTANCE.getDeviceAudioOutAccess(deviceLabel);
-        log.info("access to device: " + access);
+        DeviceAudioOutAccessRMI access = getDeviceAccess();
+
         List<MediaItemDesc> queue = null;
 
         try {
@@ -51,8 +51,7 @@ public class DeviceAudioOutPresenter {
     public Set<String> getMediaSources() {
         log.info("Media sources requested for audio device " + deviceLabel + "...");
 
-        ConductorAccessRMI access = ConductorRegistry.INSTANCE.getConductorAccessForDevice(deviceLabel);
-        log.info("access to conductor: " + access);
+        ConductorAccessRMI access = getConductorAccess();
         Set<String> sources = null;
 
         try {
@@ -70,31 +69,61 @@ public class DeviceAudioOutPresenter {
     public void setMediaSource(String mediaSource)
     {
         this.mediaSource=mediaSource;
-        log.info("Media sources '" + mediaSource + "' selected for audio device " + deviceLabel + "...");
+        log.info("Media sources XXX '" + mediaSource + "' selected for audio device " + deviceLabel + "...");
 
-        ConductorAccessRMI access = ConductorRegistry.INSTANCE.getConductorAccessForDevice(deviceLabel);
-        log.info("access to conductor: " + access);
+        updateNavItems("");
+    }
 
-        log.info("access to conductor: TEST 1" + access);
+    public void navigationItemSelected(String refItem)
+    {
+        log.info("Selected nav items '" + refItem+"'");
+        updateNavItems(refItem);
+    }
+
+    private void updateNavItems(String refItem)
+    {
+        log.info("Updating nav items to '" + refItem+"'");
+        ConductorAccessRMI access = getConductorAccess();
+
         try {
             log.info("access to conductor: TEST 2" + access);
-            List<String> items=access.getNavItems(mediaSource, "");
-        log.info("Received " + items.size() + " items from conductor");
+            List<String> items=access.getNavItems(mediaSource, refItem);
+            log.info("Received " + items.size() + " items from conductor");
             view.setNavigation(items);
-        } /*catch (RemoteException e) {
+        }catch (RemoteException e) {
             e.printStackTrace();
-        } */catch(Exception e)
+        }catch(Exception e)
         {
             log.error("Could not reach conductor!");
             log.error(e.getMessage());
         }
     }
 
-    public void navigationItemSelected(String navItem)
+    public void addToQueue(String refItem)
     {
+        DeviceAudioOutAccessRMI access=getDeviceAccess();
 
+        try {
+            access.addToQueue(new MediaItemDesc(mediaSource,refItem));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+
+        //view.setQueue(getQueue());
     }
 
-    //public List<String> getNavItems
+    private ConductorAccessRMI getConductorAccess()
+    {
+        ConductorAccessRMI access = ConductorRegistry.INSTANCE.getConductorAccessForDevice(deviceLabel);
+        log.info("access to conductor: " + access);
+        return access;
+    }
 
+    private DeviceAudioOutAccessRMI getDeviceAccess()
+    {
+        DeviceAudioOutAccessRMI access = ConductorRegistry.INSTANCE.getDeviceAudioOutAccess(deviceLabel);
+        log.info("access to device: " + access);
+        return access;
+    }
 }

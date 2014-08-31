@@ -18,10 +18,15 @@ public class ResourceFilesystem extends Resource{
 
     private String defaultLocation;
 
+    private String currentLocation;
+
+    private List<String> currentItems;
+
     public ResourceFilesystem(String label, String defaultLocation)
     {
         super(label);
         this.defaultLocation=defaultLocation;
+        currentLocation=defaultLocation;
     }
 
     public String getDefaultLocation() {
@@ -33,7 +38,7 @@ public class ResourceFilesystem extends Resource{
         String location=reference;
         if(location==null)
         {
-            location=defaultLocation;
+            location="";
         }
         return getItemsInDir(location);
     }
@@ -41,18 +46,20 @@ public class ResourceFilesystem extends Resource{
     private  List<String> getItemsInDir(String directory)
     {
         log.info("Checking directory '"+directory+"'");
-        List<String> items=new ArrayList<String>();
+
         if(directory!=null) {
-            File dir = new File(directory);
-            log.info("File dir="+dir);
+            String newLocation=currentLocation+"/"+directory;
+            File dir = new File(newLocation);
+            log.info("File dir="+newLocation);
             if (dir.isDirectory()) {
-                items = Arrays.asList(dir.list());
-                Iterator<String> it=items.iterator();
-                while(it.hasNext()) {
-                    log.info("Added '" + it.next() + "'");
-                }
+                currentLocation=newLocation;
+                currentItems = Arrays.asList(dir.list());
             }
+//            Iterator<String> it=items.iterator();
+//            while(it.hasNext()) {
+//                log.info("Added '" + it.next() + "'");
+//            }
         }
-        return items;
+        return currentItems;
     }
 }
