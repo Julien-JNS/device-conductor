@@ -6,23 +6,30 @@ import java.util.List;
 /**
  * Created by Jaunais on 22/08/2014.
  */
-public class Resource {
+public abstract class Resource {
+
+    protected enum ItemArgFormat {
+        URL;
+    }
 
     private String label;
 
-    public Resource(String label)
-    {
-        this.label=label;
+    public Resource(String label) {
+        this.label = label;
     }
 
     public String getLabel() {
         return label;
     }
 
-    public List<String> getNavItems(String reference)
-    {
-        List<String> items=new ArrayList<String>();
-        return items;
+    public List<MediaItem> getMediaItems(String reference) {
+
+        return null;
     }
 
+    public abstract List<MediaItem> getMediaItems(MediaItem requestedItem);
+
+    public String getItemArg(String item, ItemArgFormat format) {
+        return null;
+    }
 }

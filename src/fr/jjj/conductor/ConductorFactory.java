@@ -44,9 +44,9 @@ public class ConductorFactory {
 
                 String type = deviceConf.getType();
                 if (type.equals("audio-out")) {
-                    device = new DeviceAudioOut(deviceConf.getLabel(), deviceConf.getBridge());
+                    device = new DeviceAudioOut(uniqueConductor, deviceConf.getLabel(), deviceConf.getBridge());
                 } else if (type.equals("video-in")) {
-                    device = new DeviceVideoIn(deviceConf.getLabel());
+                    device = new DeviceVideoIn(uniqueConductor, deviceConf.getLabel());
                 }
                 uniqueConductor.addDevice(device);
             }
@@ -61,7 +61,7 @@ public class ConductorFactory {
                 if (type.equals("filesystem")) {
                     resource = new ResourceFilesystem(resourceConf.getLabel(), resourceConf.getStart());
                 } else if (type.equals("googlemusic")) {
-                   resource = new Resource(resourceConf.getLabel());
+                   resource = new ResourceGoogleMusic(resourceConf.getLabel());
                 }
                 uniqueConductor.addResource(resource);
             }

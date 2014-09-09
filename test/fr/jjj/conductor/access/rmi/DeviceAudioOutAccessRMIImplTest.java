@@ -65,8 +65,8 @@ public class DeviceAudioOutAccessRMIImplTest {
         List<MediaItemDesc> testedQueue=testedAccess.getQueue();
         assertEquals("Empty queue",testedQueue.size(),0);
 
-        testedAccess.addToQueue(new MediaItemDesc("Chanson 1"));
-        testedAccess.addToQueue(new MediaItemDesc("Chanson 2"));
+        testedAccess.addToQueue(new MediaItemDesc("1","Chanson 1"));
+        testedAccess.addToQueue(new MediaItemDesc("2","Chanson 2"));
 
         testedQueue=testedAccess.getQueue();
         Iterator<MediaItemDesc> itItem = testedQueue.iterator();

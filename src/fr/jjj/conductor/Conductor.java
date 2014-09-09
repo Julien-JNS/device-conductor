@@ -2,6 +2,7 @@ package fr.jjj.conductor;
 
 
 import fr.jjj.conductor.model.Device;
+import fr.jjj.conductor.model.MediaItem;
 import fr.jjj.conductor.model.Resource;
 
 import java.util.List;
@@ -26,7 +27,9 @@ public interface Conductor {
 
     Device getDevice(String deviceLabel);
 
-    List<String> getNavItems(String mediaSource, String reference);
+    List<MediaItem> getMediaItems(String mediaSource, String reference);
+
+    Resource getResource(String label);
 
 
 

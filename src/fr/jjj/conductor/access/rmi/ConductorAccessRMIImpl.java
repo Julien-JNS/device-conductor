@@ -4,6 +4,8 @@ import fr.jjj.conductor.ConductorImpl;
 import fr.jjj.conductor.access.ConductorAccess;
 import fr.jjj.conductor.model.DeviceDesc;
 import fr.jjj.conductor.model.Device;
+import fr.jjj.conductor.model.MediaItem;
+import fr.jjj.conductor.model.MediaItemDesc;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -12,10 +14,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Jaunais on 01/07/2014.
@@ -87,8 +86,16 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
 
 
     @Override
-    public List<String> getNavItems(String mediaSource, String reference) throws RemoteException {
+    public List<MediaItemDesc> getNavItems(String mediaSource, String reference) throws RemoteException {
+        List<MediaItemDesc> itemDescriptions=new ArrayList<MediaItemDesc>();
         log.info("Receive RMI request for nav items for media source '"+mediaSource+"' at "+reference);
-        return conductor.getNavItems(mediaSource,reference);
+        List<MediaItem> items=conductor.getMediaItems(mediaSource, reference);
+        Iterator<MediaItem> it=items.iterator();
+        while(it.hasNext())
+        {
+            MediaItem item=it.next();
+            itemDescriptions.add(item.getDescription());
+        }
+        return itemDescriptions;
     }
 }

@@ -7,23 +7,23 @@ import java.io.Serializable;
  */
 public class MediaItemDesc implements Serializable{
 
-    private String mediaSource;
-
     private String title;
 
-    private String location;
+    private String id;
 
-    public MediaItemDesc(String mediaSource, String title) {
-        this.mediaSource=mediaSource;
+    public MediaItemDesc() {
+    }
+
+    public MediaItemDesc(String id,String title) {
         this.title=title;
-
+        this.id=id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getMediaSource() {
-        return mediaSource;
+    public String getId() {
+        return id;
     }
 }

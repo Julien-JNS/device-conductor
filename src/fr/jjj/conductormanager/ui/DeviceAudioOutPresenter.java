@@ -8,6 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -87,9 +89,15 @@ public class DeviceAudioOutPresenter {
 
         try {
             log.info("access to conductor: TEST 2" + access);
-            List<String> items=access.getNavItems(mediaSource, refItem);
+            List<MediaItemDesc> items=access.getNavItems(mediaSource, refItem);
             log.info("Received " + items.size() + " items from conductor");
-            view.setNavigation(items);
+            List<String> titles=new ArrayList<String>();
+            Iterator<MediaItemDesc> it=items.iterator();
+            while(it.hasNext())
+            {
+                titles.add(it.next().getTitle());
+            }
+            view.setNavigation(titles);
         }catch (RemoteException e) {
             e.printStackTrace();
         }catch(Exception e)
@@ -111,6 +119,16 @@ public class DeviceAudioOutPresenter {
 
 
         //view.setQueue(getQueue());
+    }
+
+    public void play(String item)
+    {
+        log.info("Received request to play "+item);
+        try {
+            getDeviceAccess().play(new MediaItemDesc(mediaSource,item));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private ConductorAccessRMI getConductorAccess()

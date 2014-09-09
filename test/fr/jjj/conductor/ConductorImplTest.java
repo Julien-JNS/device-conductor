@@ -62,7 +62,7 @@ public class ConductorImplTest {
     @Test
     public void testGetNavItems()
     {
-        List<String> items=conductor.getNavItems(ConductorFactoryTest.RESOURCE_LABELS[0],null);
+        List<String> items=conductor.getMediaItems(ConductorFactoryTest.RESOURCE_LABELS[0], null);
 
         Iterator<String> it=items.iterator();
         assertEquals("Check first file in FS start",it.next(),"test.tst");

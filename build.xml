@@ -44,6 +44,8 @@
             <include name="**/conductor/**/rmi/*RMI.java"/>
             <include name="**/conductor/**/model/**/DeviceDesc.java"/>
             <include name="**/conductor/**/model/**/MediaItemDesc.java"/>
+            <include name="**/conductor/**/model/**/MediaItem.java"/>
+            <include name="**/conductor/**/model/**/Resource.java"/>
         </javac>
         <rmic base="${build}/conductor/classes" includes="**/*RMIImpl.class" destdir="${build}/conductor-rmi/classes"/>
     </target>
