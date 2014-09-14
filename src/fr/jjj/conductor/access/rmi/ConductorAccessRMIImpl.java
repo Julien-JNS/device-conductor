@@ -96,6 +96,7 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
             MediaItem item=it.next();
             itemDescriptions.add(item.getDescription());
         }
+        log.info("Returning "+itemDescriptions.size()+": "+itemDescriptions );
         return itemDescriptions;
     }
 }

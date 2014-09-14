@@ -102,7 +102,7 @@ public class DeviceAudioOutPresenter {
             e.printStackTrace();
         }catch(Exception e)
         {
-            log.error("Could not reach conductor!");
+            log.error("Could not reach conductor!\n"+e.fillInStackTrace());
             log.error(e.getMessage());
         }
     }

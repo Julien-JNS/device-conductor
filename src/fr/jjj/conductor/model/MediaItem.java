@@ -1,5 +1,6 @@
 package fr.jjj.conductor.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -9,6 +10,11 @@ public class MediaItem {
 
     static private Map<String,MediaItem> registry;
 
+    static
+    {
+        registry=new HashMap<String, MediaItem>();
+    }
+
     private MediaItemDesc description;
 
     private Resource mediaSource;
@@ -17,6 +23,8 @@ public class MediaItem {
 
     public MediaItem(MediaItemDesc description, Resource mediaSource, String location) {
         this.description = description;
+        this.mediaSource=mediaSource;
+        this.location=location;
     }
 
     public MediaItemDesc getDescription() {

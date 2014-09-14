@@ -59,15 +59,18 @@ public class ResourceFilesystem extends Resource{
             location="";
         }
         List<String> fileNames=getFileNamesInDir(location);
+        log.info("Found "+fileNames.size()+" items in "+location);
         Iterator<String> it=fileNames.iterator();
         while(it.hasNext())
         {
             String fileName=it.next();
-            if(!new File(fileName).isDirectory()) {
+            log.info("name: "+currentLocation+"/"+fileName);
+//            if(!new File(currentLocation+"/"+fileName).isDirectory()) {
                 MediaItemDesc itemDescription = new MediaItemDesc(String.valueOf(idCounter++), fileName);
                 MediaItem item = new MediaItem(itemDescription, this, location);
+                log.info("Found: "+item.getDescription().getTitle());
                 items.add(item);
-            }
+//            }
         }
         return items;
     }
