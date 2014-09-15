@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ public class ResourceFilesystem extends Resource{
         File testDir=new File(currentLocation+"/"+requestedItem.getDescription().getTitle());
         if(testDir.isDirectory())
         {
-            items=getMediaItems(testDir.getAbsolutePath());
+            items=getMediaItems(requestedItem.getDescription().getTitle());
         }
         else
         {
@@ -77,14 +78,15 @@ public class ResourceFilesystem extends Resource{
 
     private  List<String> getFileNamesInDir(String directory)
     {
-        log.info("Checking directory '"+directory+"'");
+        log.info("Checking directory '"+directory+"' in "+currentLocation);
 
         if(directory!=null) {
             String newLocation=currentLocation+"/"+directory;
             File dir = new File(newLocation);
             log.info("File dir="+newLocation);
             if (dir.isDirectory()) {
-                currentLocation=newLocation;
+                currentLocation=dir.toPath().normalize().toString();
+                log.info("Current directory is now: "+currentLocation);
                 currentItems = Arrays.asList(dir.list());
             }
         }

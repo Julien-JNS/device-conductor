@@ -8,10 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Jaunais on 11/08/2014.
@@ -23,6 +20,8 @@ public class DeviceAudioOutPresenter {
     private DeviceAudioOutView view;
 
     private String deviceLabel,mediaSource;
+
+    private Map<String, MediaItemDesc> currentMediaItems=new HashMap<String, MediaItemDesc>();
 
     public DeviceAudioOutPresenter(DeviceAudioOutView view) {
         this.view = view;
@@ -71,7 +70,7 @@ public class DeviceAudioOutPresenter {
     public void setMediaSource(String mediaSource)
     {
         this.mediaSource=mediaSource;
-        log.info("Media sources XXX '" + mediaSource + "' selected for audio device " + deviceLabel + "...");
+        log.info("Media sources '" + mediaSource + "' selected for audio device " + deviceLabel + "...");
 
         updateNavItems("");
     }
@@ -88,14 +87,17 @@ public class DeviceAudioOutPresenter {
         ConductorAccessRMI access = getConductorAccess();
 
         try {
-            log.info("access to conductor: TEST 2" + access);
             List<MediaItemDesc> items=access.getNavItems(mediaSource, refItem);
             log.info("Received " + items.size() + " items from conductor");
             List<String> titles=new ArrayList<String>();
             Iterator<MediaItemDesc> it=items.iterator();
+            currentMediaItems.clear();
             while(it.hasNext())
             {
-                titles.add(it.next().getTitle());
+                MediaItemDesc item=it.next();
+                String title=item.getTitle();
+                currentMediaItems.put(title,item);
+                titles.add(title);
             }
             view.setNavigation(titles);
         }catch (RemoteException e) {
@@ -109,16 +111,14 @@ public class DeviceAudioOutPresenter {
 
     public void addToQueue(String refItem)
     {
+        log.info("Sending request to add "+refItem+" to queue...");
         DeviceAudioOutAccessRMI access=getDeviceAccess();
 
         try {
-            access.addToQueue(new MediaItemDesc(mediaSource,refItem));
+            access.addToQueue(currentMediaItems.get(refItem));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
-
-        //view.setQueue(getQueue());
     }
 
     public void play(String item)

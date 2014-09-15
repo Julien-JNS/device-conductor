@@ -39,8 +39,8 @@ public class DeviceAudioOutAccessRMIImpl extends DeviceAccessRMIImpl implements 
 
     @Override
     public void addToQueue(MediaItemDesc itemDesc) {
+        log.info("Received request to add "+itemDesc.getTitle()+" to queue.");
         ((DeviceAudioOut)device).addToQueue(MediaItem.getMediaItem(itemDesc));
-
     }
 
     @Override
