@@ -23,9 +23,9 @@ public class DeviceAudioOut extends Device {
 
     private PlayerHandler playerHandler;
 
-    public DeviceAudioOut(Conductor conductor, String label,String bridge)
+    public DeviceAudioOut(String label,String bridge)
     {
-        super(conductor, label,"audio-out");
+        super(label,"audio-out");
         queue=new ArrayList<MediaItem>();
 
         if(bridge.equals("omxplayer"))

@@ -1,6 +1,5 @@
 package fr.jjj.conductor.model;
 
-import fr.jjj.conductor.Conductor;
 
 import java.io.Serializable;
 
@@ -15,11 +14,8 @@ public abstract class Device implements Serializable{
 
     private String status;
 
-    protected Conductor conductor;
-
-    public Device(Conductor conductor, String label, String type)
+    public Device(String label, String type)
     {
-        this.conductor=conductor;
         this.label=label;
         this.type=type;
     }

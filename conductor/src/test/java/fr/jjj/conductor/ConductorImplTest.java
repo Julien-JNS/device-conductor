@@ -1,5 +1,6 @@
 package fr.jjj.conductor;
 
+import fr.jjj.conductor.model.MediaItem;
 import fr.jjj.conductor.model.Resource;
 import fr.jjj.conductor.model.ResourceFilesystem;
 import org.junit.Before;
@@ -62,10 +63,10 @@ public class ConductorImplTest {
     @Test
     public void testGetNavItems()
     {
-        List<String> items=conductor.getMediaItems(ConductorFactoryTest.RESOURCE_LABELS[0], null);
+        List<MediaItem> items=conductor.getMediaItems(ConductorFactoryTest.RESOURCE_LABELS[0], null);
 
-        Iterator<String> it=items.iterator();
-        assertEquals("Check first file in FS start",it.next(),"test.tst");
+        Iterator<MediaItem> it=items.iterator();
+        assertEquals("Check first file in FS start",it.next().getDescription().getTitle(),"test.tst");
 
 
 

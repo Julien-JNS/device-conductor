@@ -12,24 +12,27 @@ public class DeviceAudioOutTest {
 
     private static DeviceAudioOut device;
 
+    private static Resource resource;
+
 
     @Before
     public void initialize() {
         device = new DeviceAudioOut("deviceAudioOut","OMX");
+        resource=new ResourceFilesystem("freebox","");
     }
 
     @Test
     public void testGetQueue() throws Exception {
-        List<MediaItemDesc> testedQueue=device.getQueue();
+        List<MediaItem> testedQueue=device.getQueue();
         assertEquals("Empty queue",testedQueue.size(),0);
 
-        device.addToQueue(new MediaItemDesc("Chanson 1"));
-        device.addToQueue(new MediaItemDesc("Chanson 2"));
+        device.addToQueue(new MediaItem(new MediaItemDesc("1","Chanson 1"),resource,""));
+        device.addToQueue(new MediaItem(new MediaItemDesc("2","Chanson 2"),resource,""));
 
-        Iterator<MediaItemDesc> itItem = testedQueue.iterator();
+        Iterator<MediaItem> itItem = testedQueue.iterator();
 
-        assertEquals("first item",itItem.next().getTitle(),"Chanson 1");
-        assertEquals("second item",itItem.next().getTitle(),"Chanson 2");
+        assertEquals("first item",itItem.next().getDescription().getTitle(),"Chanson 1");
+        assertEquals("second item",itItem.next().getDescription().getTitle(),"Chanson 2");
 
     }
 

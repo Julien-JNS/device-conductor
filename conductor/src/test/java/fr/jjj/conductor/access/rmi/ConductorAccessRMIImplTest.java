@@ -6,6 +6,7 @@ import fr.jjj.conductor.ConductorFactoryTest;
 import fr.jjj.conductor.model.DeviceDesc;
 import fr.jjj.conductor.config.ConductorConfig;
 import fr.jjj.conductor.config.NetworkConfig;
+import fr.jjj.conductor.model.MediaItemDesc;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -74,14 +75,14 @@ public class ConductorAccessRMIImplTest {
     @Test
     public void testGetNavItems()
     {
-        List<String> items= null;
+        List<MediaItemDesc> items= null;
         try {
             items = testedAccess.getNavItems(ConductorFactoryTest.RESOURCE_LABELS[0],null);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
 
-        Iterator<String> it=items.iterator();
+        Iterator<MediaItemDesc> it=items.iterator();
         assertEquals("Check first file in FS start",it.next(),"test.tst");
     }
 }

@@ -6,6 +6,7 @@ import fr.jjj.conductor.access.ConductorAccess;
 import fr.jjj.conductor.config.ConductorConfig;
 import fr.jjj.conductor.config.DeviceConfig;
 import fr.jjj.conductor.config.ResourceConfig;
+import fr.jjj.conductor.model.*;
 
 import java.util.Iterator;
 import java.util.Set;
