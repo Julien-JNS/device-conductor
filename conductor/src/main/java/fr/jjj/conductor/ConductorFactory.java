@@ -40,7 +40,7 @@ public class ConductorFactory {
 
                 String type = deviceConf.getType();
                 if (type.equals("audio-out")) {
-                    device = new DeviceAudioOut(uniqueConductor, deviceConf.getLabel(), deviceConf.getBridge());
+                    device = new DeviceAudioOut(deviceConf.getLabel(), deviceConf.getBridge());
                 } else if (type.equals("video-in")) {
                     device = new DeviceVideoIn(uniqueConductor, deviceConf.getLabel());
                 }

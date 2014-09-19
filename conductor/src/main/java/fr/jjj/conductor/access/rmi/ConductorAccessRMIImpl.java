@@ -90,6 +90,8 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
         List<MediaItemDesc> itemDescriptions=new ArrayList<MediaItemDesc>();
         log.info("Receive RMI request for nav items for media source '"+mediaSource+"' at "+reference);
         List<MediaItem> items=conductor.getMediaItems(mediaSource, reference);
+        if(items!=null)
+        {
         Iterator<MediaItem> it=items.iterator();
         while(it.hasNext())
         {
@@ -97,6 +99,7 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
             itemDescriptions.add(item.getDescription());
         }
         log.info("Returning "+itemDescriptions.size()+": "+itemDescriptions );
+        }
         return itemDescriptions;
     }
 }

@@ -17,44 +17,11 @@ import static org.junit.Assert.*;
 
 public class ConductorFactoryTest {
 
-    public static String CONDUCTOR_LABEL="RPI-1 (Salon)";
-
-    public static final String[] DEVICE_LABELS = {"enceinte salon","webcam salon"};
-
-    public static final String[] RESOURCE_LABELS = {"Musique FREEBOX","Musique GOOGLE"};
-
-    public static final String FILESYSTEM_START="./tmp/freebox";
-
-    public static final String CONFIG1 = "{'label':'"+CONDUCTOR_LABEL+"','networkConfig': {'host': '127.0.0.1','port': '4056'}," +
-            "'devices': " +
-            "[{'type': 'audio-out','label':'" + DEVICE_LABELS[0] + "','bridge':'omxplayer'}," +
-            "{'type': 'video-in','label':'" + DEVICE_LABELS[1] + "','bridge': 'xxx'}]," +
-            "'resources':" +
-            "[{'type': 'filesystem','label': '"+RESOURCE_LABELS[0]+"','start': '"+FILESYSTEM_START+"'}," +
-            "{'type': 'googlemusic','label': '"+RESOURCE_LABELS[1]+"','start': 'Maryse'" +
-            "}]}";
-
-    static public void initializeConfig() {
-        // create config file
-        File configFile = new File("./config.json");
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(configFile);
-
-            fos.write(CONFIG1.getBytes());
-
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Before
     public void initialize() {
         // create config file
-        ConductorFactoryTest.initializeConfig();
+        TestUtils.initializeConfig();
     }
 
     @Test
@@ -70,9 +37,9 @@ public class ConductorFactoryTest {
         Iterator<Device> itDevice = c.getDevices().iterator();
         while(itDevice.hasNext()) {
             Device d = itDevice.next();
-            if (d.getLabel().equals(ConductorFactoryTest.DEVICE_LABELS[0])) {
+            if (d.getLabel().equals(TestUtils.DEVICE_LABELS[0])) {
                 assertTrue("Check type for device 1", d instanceof DeviceAudioOut);
-            } else if (d.getLabel().equals(ConductorFactoryTest.DEVICE_LABELS[1])) {
+            } else if (d.getLabel().equals(TestUtils.DEVICE_LABELS[1])) {
                 assertTrue("Check type for device 2", d instanceof DeviceVideoIn);
             }
         }

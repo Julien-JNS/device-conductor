@@ -2,7 +2,8 @@ package fr.jjj.conductor.access.rmi;
 
 import fr.jjj.conductor.Conductor;
 import fr.jjj.conductor.ConductorFactory;
-import fr.jjj.conductor.ConductorFactoryTest;
+import fr.jjj.conductor.TestUtils;
+import fr.jjj.conductor.TestUtils;
 import fr.jjj.conductor.model.DeviceDesc;
 import fr.jjj.conductor.config.ConductorConfig;
 import fr.jjj.conductor.config.NetworkConfig;
@@ -27,7 +28,7 @@ public class ConductorAccessRMIImplTest {
     @BeforeClass
     public static void initialize()
     {
-        ConductorFactoryTest.initializeConfig();
+        TestUtils.initializeConfig();
         try {
 
             conductor=new ConductorFactory().getConductor();
@@ -54,7 +55,7 @@ public class ConductorAccessRMIImplTest {
 
     @Test
     public void testGetLabel() throws Exception {
-        assertEquals("Conductor Label",testedAccess.getLabel(), ConductorFactoryTest.CONDUCTOR_LABEL);
+        assertEquals("Conductor Label",testedAccess.getLabel(), TestUtils.CONDUCTOR_LABEL);
     }
 
     @Test
@@ -63,9 +64,9 @@ public class ConductorAccessRMIImplTest {
         Iterator<DeviceDesc> itDeviceDesc = testedAccess.getDeviceDescriptions().iterator();
         while(itDeviceDesc.hasNext()) {
             DeviceDesc dd = itDeviceDesc.next();
-            if (dd.getLabel().equals(ConductorFactoryTest.DEVICE_LABELS[0])) {
+            if (dd.getLabel().equals(TestUtils.DEVICE_LABELS[0])) {
                 assertEquals("Check type for device 1", dd.getType(),"audio-out");
-            } else if (dd.getLabel().equals(ConductorFactoryTest.DEVICE_LABELS[1])) {
+            } else if (dd.getLabel().equals(TestUtils.DEVICE_LABELS[1])) {
                 assertEquals("Check type for device 2", dd.getType(), "video-in");
             }
         }
@@ -77,12 +78,12 @@ public class ConductorAccessRMIImplTest {
     {
         List<MediaItemDesc> items= null;
         try {
-            items = testedAccess.getNavItems(ConductorFactoryTest.RESOURCE_LABELS[0],null);
+            items = testedAccess.getNavItems(TestUtils.RESOURCE_LABELS[0],null);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
 
         Iterator<MediaItemDesc> it=items.iterator();
-        assertEquals("Check first file in FS start",it.next(),"test.tst");
+        assertEquals("Check first file in FS start",it.next().getTitle(),"test.mp3");
     }
 }

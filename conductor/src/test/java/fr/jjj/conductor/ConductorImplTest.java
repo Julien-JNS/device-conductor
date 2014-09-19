@@ -17,19 +17,16 @@ public class ConductorImplTest {
 
     private static ConductorImpl conductor;
 
-
-
-
     @Before
     public void initialize() {
         // create config file
-        ConductorFactoryTest.initializeConfig();
+        TestUtils.initializeConfig();
 
         conductor = new ConductorFactory().getConductor();
 
         try {
-            new File(ConductorFactoryTest.FILESYSTEM_START).mkdirs();
-            new File(ConductorFactoryTest.FILESYSTEM_START+File.separator+"test.tst").createNewFile();
+            new File(TestUtils.FILESYSTEM_START).mkdirs();
+            new File(TestUtils.FILESYSTEM_START+File.separator+"test.tst").createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,8 +35,8 @@ public class ConductorImplTest {
     @Test
     public void testGetDevice() {
 
-        assertEquals("device 1",conductor.getDevice(ConductorFactoryTest.DEVICE_LABELS[0]).getLabel(),ConductorFactoryTest.DEVICE_LABELS[0]);
-        assertEquals("device 1",conductor.getDevice(ConductorFactoryTest.DEVICE_LABELS[1]).getLabel(),ConductorFactoryTest.DEVICE_LABELS[1]);
+        assertEquals("device 1",conductor.getDevice(TestUtils.DEVICE_LABELS[0]).getLabel(),TestUtils.DEVICE_LABELS[0]);
+        assertEquals("device 1",conductor.getDevice(TestUtils.DEVICE_LABELS[1]).getLabel(),TestUtils.DEVICE_LABELS[1]);
     }
 
     @Test
@@ -49,11 +46,11 @@ public class ConductorImplTest {
         while(it.hasNext())
         {
             Resource r=it.next();
-            if(r.getLabel().equals(ConductorFactoryTest.RESOURCE_LABELS[0]))
+            if(r.getLabel().equals(TestUtils.RESOURCE_LABELS[0]))
             {
-                assertTrue("Check resource "+ConductorFactoryTest.RESOURCE_LABELS[0],r instanceof ResourceFilesystem);
+                assertTrue("Check resource "+TestUtils.RESOURCE_LABELS[0],r instanceof ResourceFilesystem);
             }
-            else if(r.getLabel().equals(ConductorFactoryTest.RESOURCE_LABELS[1]))
+            else if(r.getLabel().equals(TestUtils.RESOURCE_LABELS[1]))
             {
 
             }
@@ -63,7 +60,7 @@ public class ConductorImplTest {
     @Test
     public void testGetNavItems()
     {
-        List<MediaItem> items=conductor.getMediaItems(ConductorFactoryTest.RESOURCE_LABELS[0], null);
+        List<MediaItem> items=conductor.getMediaItems(TestUtils.RESOURCE_LABELS[0], null);
 
         Iterator<MediaItem> it=items.iterator();
         assertEquals("Check first file in FS start",it.next().getDescription().getTitle(),"test.tst");

@@ -3,6 +3,7 @@ package fr.jjj.conductor.access.rmi;
 import fr.jjj.conductor.Conductor;
 import fr.jjj.conductor.ConductorFactory;
 import fr.jjj.conductor.ConductorFactoryTest;
+import fr.jjj.conductor.TestUtils;
 import fr.jjj.conductor.config.ConductorConfig;
 import fr.jjj.conductor.config.NetworkConfig;
 import fr.jjj.conductor.model.*;
@@ -28,7 +29,8 @@ public class DeviceAudioOutAccessRMIImplTest {
     @BeforeClass
     public static void initialize()
     {
-        ConductorFactoryTest.initializeConfig();
+        TestUtils.initializeFileSystem();
+        TestUtils.initializeConfig();
         try {
 
             conductor=new ConductorFactory().getConductor();
@@ -40,7 +42,7 @@ public class DeviceAudioOutAccessRMIImplTest {
 
             conductorAccess = (ConductorAccessRMI) registry.lookup(name);
 
-            testedAccess=conductorAccess.getDeviceAudioOutAccess(ConductorFactoryTest.DEVICE_LABELS[0]);
+            testedAccess=conductorAccess.getDeviceAudioOutAccess(TestUtils.DEVICE_LABELS[0]);
 
             System.out.println("device label:" + testedAccess.getLabel());
             // MediaActivityAccessRMI am=spriteComm.getActivityMedia();
@@ -57,7 +59,7 @@ public class DeviceAudioOutAccessRMIImplTest {
 
     @Test
     public void testGetLabel() throws Exception {
-        assertEquals("Conductor Label",testedAccess.getLabel(), ConductorFactoryTest.DEVICE_LABELS[0]);
+        assertEquals("Conductor Label",testedAccess.getLabel(), TestUtils.DEVICE_LABELS[0]);
     }
 
     @Test
@@ -65,14 +67,19 @@ public class DeviceAudioOutAccessRMIImplTest {
         List<MediaItemDesc> testedQueue=testedAccess.getQueue();
         assertEquals("Empty queue",testedQueue.size(),0);
 
-        testedAccess.addToQueue(new MediaItemDesc("1","Chanson 1"));
-        testedAccess.addToQueue(new MediaItemDesc("2","Chanson 2"));
+
+        for(String mediaSource:conductorAccess.getMediaSources(TestUtils.DEVICE_LABELS[0]))
+        {
+            for(MediaItemDesc mediaItemDesc:conductorAccess.getNavItems(mediaSource,null))
+            {
+                testedAccess.addToQueue(mediaItemDesc);
+            }
+        }
 
         testedQueue=testedAccess.getQueue();
         Iterator<MediaItemDesc> itItem = testedQueue.iterator();
 
-        assertEquals("first item",itItem.next().getTitle(),"Chanson 1");
-        assertEquals("second item",itItem.next().getTitle(),"Chanson 2");
+        assertEquals("first item",itItem.next().getTitle(),"test.mp3");
 
     }
 }
