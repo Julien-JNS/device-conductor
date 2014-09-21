@@ -31,7 +31,7 @@ public class ConductorAccessRMIImplTest {
         TestUtils.initializeConfig();
         try {
 
-            conductor=new ConductorFactory().getConductor();
+            conductor=ConductorFactory.getInstance().getConductor();
 
             String name = "conductorAccess";
             ConductorConfig config= ConductorConfig.getConfig();
@@ -84,6 +84,8 @@ public class ConductorAccessRMIImplTest {
         }
 
         Iterator<MediaItemDesc> it=items.iterator();
-        assertEquals("Check first file in FS start",it.next().getTitle(),"test.mp3");
+        for(String expectedItem:TestUtils.getExpectedItems()) {
+            assertEquals("Check item in FS start", expectedItem, it.next().getTitle());
+        }
     }
 }

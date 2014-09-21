@@ -9,7 +9,7 @@ public class Starter {
 
     public static void main(String[] args) {
 
-        ConductorImpl conductor=new ConductorFactory().getConductor();
+        ConductorImpl conductor=ConductorFactory.getInstance().getConductor();
 
 
 //        System.out.println("test start getAM:"+conductor.getActivityMedia());

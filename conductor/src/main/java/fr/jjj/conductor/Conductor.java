@@ -31,6 +31,7 @@ public interface Conductor {
 
     Resource getResource(String label);
 
+    void stop();
 
 
 }

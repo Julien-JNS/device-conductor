@@ -16,14 +16,23 @@ import java.util.Set;
  */
 public class ConductorFactory {
 
+    private static ConductorFactory instance;
+
+    public static ConductorFactory getInstance() {
+        if (instance == null) {
+            instance = new ConductorFactory();
+        }
+        return instance;
+    }
+
     private ConductorConfig config;
 
-    private static ConductorImpl uniqueConductor;
+    private ConductorImpl uniqueConductor;
 
-    private static ConductorAccess uniqueAccess;
+    private ConductorAccess uniqueAccess;
 
-    public ConductorFactory() {
-            config = ConductorConfig.getConfig();
+    private ConductorFactory() {
+        config = ConductorConfig.getConfig();
 
     }
 
@@ -57,7 +66,7 @@ public class ConductorFactory {
                 if (type.equals("filesystem")) {
                     resource = new ResourceFilesystem(resourceConf.getLabel(), resourceConf.getStart());
                 } else if (type.equals("googlemusic")) {
-                   resource = new ResourceGoogleMusic(resourceConf.getLabel());
+                    resource = new ResourceGoogleMusic(resourceConf.getLabel());
                 }
                 uniqueConductor.addResource(resource);
             }
@@ -91,4 +100,9 @@ public class ConductorFactory {
         return uniqueConductor;
     }
 
+    public void reset() {
+        uniqueAccess.close();
+        uniqueAccess = null;
+        uniqueConductor = null;
+    }
 }

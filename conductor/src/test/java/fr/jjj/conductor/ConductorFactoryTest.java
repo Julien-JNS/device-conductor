@@ -4,6 +4,7 @@ import fr.jjj.conductor.model.Device;
 import fr.jjj.conductor.model.DeviceAudioOut;
 import fr.jjj.conductor.model.DeviceAudioOutTest;
 import fr.jjj.conductor.model.DeviceVideoIn;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,11 +25,16 @@ public class ConductorFactoryTest {
         TestUtils.initializeConfig();
     }
 
+    @After
+    public void clean() {
+
+    }
+
     @Test
     public void checkConfigParsing() {
 
         // MyClass is tested
-        Conductor c = new ConductorFactory().getConductor();
+        Conductor c = ConductorFactory.getInstance().getConductor();
 
         // Tests
         assertEquals("Conductor label", "RPI-1 (Salon)", c.getLabel());

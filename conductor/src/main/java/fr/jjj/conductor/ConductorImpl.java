@@ -94,4 +94,9 @@ public class ConductorImpl implements Conductor {
     public Resource getResource(String label) {
         return resources.get(label);
     }
+
+    @Override
+    public void stop() {
+        ConductorFactory.getInstance().reset();
+    }
 }

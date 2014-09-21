@@ -9,7 +9,10 @@ import fr.jjj.conductor.model.MediaItemDesc;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -23,6 +26,10 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
 
     private Log log= LogFactory.getLog(this.getClass());
 
+    private static final String CONDUCTOR_RMI_ID="conductorAccess";
+
+    private Registry registry;
+
     private int port;
 
     public ConductorAccessRMIImpl(ConductorImpl sprite, String host, int port) {
@@ -33,9 +40,9 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
         try {
             System.out.println("Opening conductor access on host "+host+" and port "+port);
             ConductorAccessRMI stub = (ConductorAccessRMI) UnicastRemoteObject.exportObject(this, port);
-            Registry registry = LocateRegistry.createRegistry(port);
+            registry = LocateRegistry.createRegistry(port);
             System.out.println("Registry "+host+","+port+":"+registry);
-            registry.bind("conductorAccess", stub);
+            registry.bind(CONDUCTOR_RMI_ID, stub);
             System.out.println("RMI object published");
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -101,5 +108,20 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
         log.info("Returning "+itemDescriptions.size()+": "+itemDescriptions );
         }
         return itemDescriptions;
+    }
+
+    @Override
+    public void close() {
+        try {
+           // registry.unbind("conductorAccess");
+            Naming.lookup(CONDUCTOR_RMI_ID);
+            Naming.unbind(CONDUCTOR_RMI_ID);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 }

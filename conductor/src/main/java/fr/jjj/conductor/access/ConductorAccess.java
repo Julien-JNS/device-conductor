@@ -13,6 +13,7 @@ public abstract class ConductorAccess {
         this.conductor = conductor;
     }
 
+    public abstract void close();
 
 
 }

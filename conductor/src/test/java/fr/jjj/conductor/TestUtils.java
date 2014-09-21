@@ -49,14 +49,21 @@ public class TestUtils {
 
     static public void initializeFileSystem() {
         try {
-            new File("./tmp/test.mp3").createNewFile();
-            new File("./tmp/dir/test1.mp3").createNewFile();
-            new File("./tmp/dir/test2.mp3").createNewFile();
+            new File(TestUtils.FILESYSTEM_START).mkdirs();
+            new File(TestUtils.FILESYSTEM_START+File.separator+"test.mp3").createNewFile();
+            new File(TestUtils.FILESYSTEM_START+File.separator+"dir").mkdirs();
+            new File(TestUtils.FILESYSTEM_START+File.separator+"dir"+File.separator+"test1.mp3").createNewFile();
+            new File(TestUtils.FILESYSTEM_START+File.separator+"dir"+File.separator+"test2.mp3").createNewFile();
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-
-
     }
 
+    static public String[] getExpectedItems() {
+        return new String[]{"dir","test.mp3"};
+    }
+
+    static public String[] getExpectedQueueItems() {
+        return new String[]{"test1.mp3","test2.mp3","test.mp3"};
+    }
 }

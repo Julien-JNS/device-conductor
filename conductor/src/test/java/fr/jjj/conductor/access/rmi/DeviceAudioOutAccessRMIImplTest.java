@@ -33,7 +33,7 @@ public class DeviceAudioOutAccessRMIImplTest {
         TestUtils.initializeConfig();
         try {
 
-            conductor=new ConductorFactory().getConductor();
+            conductor=ConductorFactory.getInstance().getConductor();
 
             String name = "conductorAccess";
             ConductorConfig config= ConductorConfig.getConfig();
@@ -78,8 +78,9 @@ public class DeviceAudioOutAccessRMIImplTest {
 
         testedQueue=testedAccess.getQueue();
         Iterator<MediaItemDesc> itItem = testedQueue.iterator();
-
-        assertEquals("first item",itItem.next().getTitle(),"test.mp3");
+        for(String expectedQueueItem:TestUtils.getExpectedQueueItems()) {
+            assertEquals("Check queue item", expectedQueueItem, itItem.next().getTitle());
+        }
 
     }
 }
