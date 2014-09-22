@@ -24,9 +24,9 @@ import java.util.*;
  */
 public class ConductorAccessRMIImpl extends ConductorAccess implements ConductorAccessRMI {
 
-    private Log log= LogFactory.getLog(this.getClass());
+    private Log log = LogFactory.getLog(this.getClass());
 
-    private static final String CONDUCTOR_RMI_ID="conductorAccess";
+    private static final String CONDUCTOR_RMI_ID = "conductorAccess";
 
     private Registry registry;
 
@@ -35,13 +35,13 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
     public ConductorAccessRMIImpl(ConductorImpl sprite, String host, int port) {
         super(sprite);
 
-        this.port=port;
+        this.port = port;
 
         try {
-            System.out.println("Opening conductor access on host "+host+" and port "+port);
+            System.out.println("Opening conductor access on host " + host + " and port " + port);
             ConductorAccessRMI stub = (ConductorAccessRMI) UnicastRemoteObject.exportObject(this, port);
             registry = LocateRegistry.createRegistry(port);
-            System.out.println("Registry "+host+","+port+":"+registry);
+            System.out.println("Registry " + host + "," + port + ":" + registry);
             registry.bind(CONDUCTOR_RMI_ID, stub);
             System.out.println("RMI object published");
         } catch (RemoteException e) {
@@ -59,12 +59,11 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
     @Override
     public Set<DeviceDesc> getDeviceDescriptions() throws RemoteException {
 
-        Set<DeviceDesc> set=new HashSet<DeviceDesc>();
-        Iterator<Device> itDevice=conductor.getDevices().iterator();
-        while(itDevice.hasNext())
-        {
-            Device device=itDevice.next();
-            DeviceDesc deviceDesc=new DeviceDesc();
+        Set<DeviceDesc> set = new HashSet<DeviceDesc>();
+        Iterator<Device> itDevice = conductor.getDevices().iterator();
+        while (itDevice.hasNext()) {
+            Device device = itDevice.next();
+            DeviceDesc deviceDesc = new DeviceDesc();
             deviceDesc.setLabel(device.getLabel());
             deviceDesc.setConductor(conductor.getLabel());
             deviceDesc.setType(device.getType());
@@ -76,7 +75,7 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
 
     @Override
     public DeviceAudioOutAccessRMI getDeviceAudioOutAccess(String deviceLabel) throws RemoteException {
-        return  (DeviceAudioOutAccessRMI) UnicastRemoteObject.exportObject(new DeviceAudioOutAccessRMIImpl(conductor.getDevice(deviceLabel)),port);
+        return (DeviceAudioOutAccessRMI) UnicastRemoteObject.exportObject(new DeviceAudioOutAccessRMIImpl(conductor.getDevice(deviceLabel)), port);
     }
 
     @Override
@@ -94,18 +93,16 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
 
     @Override
     public List<MediaItemDesc> getNavItems(String mediaSource, String reference) throws RemoteException {
-        List<MediaItemDesc> itemDescriptions=new ArrayList<MediaItemDesc>();
-        log.info("Receive RMI request for nav items for media source '"+mediaSource+"' at "+reference);
-        List<MediaItem> items=conductor.getMediaItems(mediaSource, reference);
-        if(items!=null)
-        {
-        Iterator<MediaItem> it=items.iterator();
-        while(it.hasNext())
-        {
-            MediaItem item=it.next();
-            itemDescriptions.add(item.getDescription());
-        }
-        log.info("Returning "+itemDescriptions.size()+": "+itemDescriptions );
+        List<MediaItemDesc> itemDescriptions = new ArrayList<MediaItemDesc>();
+        log.info("Receive RMI request for nav items for media source '" + mediaSource + "' at " + reference);
+        List<MediaItem> items = conductor.getMediaItems(mediaSource, reference);
+        if (items != null) {
+            Iterator<MediaItem> it = items.iterator();
+            while (it.hasNext()) {
+                MediaItem item = it.next();
+                itemDescriptions.add(item.getDescription());
+            }
+            log.info("Returning " + itemDescriptions.size() + ": " + itemDescriptions);
         }
         return itemDescriptions;
     }
@@ -113,15 +110,21 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
     @Override
     public void close() {
         try {
-           // registry.unbind("conductorAccess");
-            Naming.lookup(CONDUCTOR_RMI_ID);
-            Naming.unbind(CONDUCTOR_RMI_ID);
+            // registry.unbind("conductorAccess");
+//            Naming.lookup(CONDUCTOR_RMI_ID);
+//            Naming.unbind(CONDUCTOR_RMI_ID);
+            if (registry == null) {
+                registry = LocateRegistry.getRegistry(port);
+            }
+            registry.lookup(CONDUCTOR_RMI_ID);
+            registry.unbind(CONDUCTOR_RMI_ID);
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NotBoundException e) {
             e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         }
+//        catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
     }
 }

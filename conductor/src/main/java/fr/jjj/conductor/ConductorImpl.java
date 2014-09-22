@@ -98,5 +98,6 @@ public class ConductorImpl implements Conductor {
     @Override
     public void stop() {
         ConductorFactory.getInstance().reset();
+        log.info("Conductor "+getLabel()+" stopped and removed.");
     }
 }

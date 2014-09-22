@@ -18,23 +18,21 @@ import static org.junit.Assert.*;
 
 public class ConductorFactoryTest {
 
+    private Conductor c;
 
     @Before
     public void initialize() {
+        System.out.println("Before");
         // create config file
         TestUtils.initializeConfig();
     }
 
-    @After
-    public void clean() {
-
-    }
 
     @Test
     public void checkConfigParsing() {
 
         // MyClass is tested
-        Conductor c = ConductorFactory.getInstance().getConductor();
+        c = ConductorFactory.getInstance().getConductor();
 
         // Tests
         assertEquals("Conductor label", "RPI-1 (Salon)", c.getLabel());
@@ -52,4 +50,10 @@ public class ConductorFactoryTest {
     }
 
 
+
+    @After
+    public void clean() {
+        System.out.println("After");
+        c.stop();
+    }
 }
