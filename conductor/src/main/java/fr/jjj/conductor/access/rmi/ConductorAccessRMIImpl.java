@@ -110,21 +110,18 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
     @Override
     public void close() {
         try {
-            // registry.unbind("conductorAccess");
-//            Naming.lookup(CONDUCTOR_RMI_ID);
-//            Naming.unbind(CONDUCTOR_RMI_ID);
             if (registry == null) {
                 registry = LocateRegistry.getRegistry(port);
             }
             registry.lookup(CONDUCTOR_RMI_ID);
             registry.unbind(CONDUCTOR_RMI_ID);
+
+            UnicastRemoteObject.unexportObject(registry, true);
+
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NotBoundException e) {
             e.printStackTrace();
         }
-//        catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
     }
 }

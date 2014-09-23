@@ -1,15 +1,14 @@
 package fr.jjj.conductormanager.ui;
 
 import fr.jjj.conductor.ConductorFactory;
-import fr.jjj.conductor.ConductorFactoryTest;
 import fr.jjj.conductor.ConductorImpl;
+import fr.jjj.conductormanager.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 public class DeviceAudioOutPresenterTest implements DeviceAudioOutView{
@@ -21,10 +20,11 @@ public class DeviceAudioOutPresenterTest implements DeviceAudioOutView{
 
     @Before
     public void initialize() {
-        // create config file
-        ConductorFactoryTest.initializeConfig();
+        // create config files
+        TestUtils.initializeConfig();
+        TestUtils.initializeManagerConfig();
 
-        conductor = new ConductorFactory().getConductor();
+        conductor = ConductorFactory.getInstance().getConductor();
         presenter=new DeviceAudioOutPresenter(this);
     }
 
@@ -36,8 +36,8 @@ public class DeviceAudioOutPresenterTest implements DeviceAudioOutView{
     @Test
     public void testSetMediaSource()
     {
-        presenter.setDevice(ConductorFactoryTest.DEVICE_LABELS[0]);
-        presenter.setMediaSource(ConductorFactoryTest.RESOURCE_LABELS[0]);
+        presenter.setDevice(TestUtils.DEVICE_LABELS[0]);
+        presenter.setMediaSource(TestUtils.RESOURCE_LABELS[0]);
     }
 
 
@@ -51,5 +51,10 @@ public class DeviceAudioOutPresenterTest implements DeviceAudioOutView{
 
         Iterator<String> it=items.iterator();
         assertEquals("Check first file in FS start",it.next(),"test.tst");
+    }
+
+    @Override
+    public void setQueue(List<String> items) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
