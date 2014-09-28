@@ -1,5 +1,8 @@
 package fr.jjj.conductor.model;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +12,8 @@ import java.util.Map;
 public class MediaItem {
 
     static private Map<String,MediaItem> registry;
+
+    private static final Log log= LogFactory.getLog(MediaItem.class);
 
     static
     {
@@ -47,6 +52,8 @@ public class MediaItem {
 
     static public MediaItem getMediaItem(MediaItemDesc description)
     {
+        log.info("Match description for "+description.getTitle()+" (id "+description.getId()+")?");
+        log.info("Registry conains key? "+registry.containsKey(description.getId()));
         return registry.get(description.getId());
     }
 }

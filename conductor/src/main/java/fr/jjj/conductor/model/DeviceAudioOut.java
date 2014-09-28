@@ -63,6 +63,7 @@ public class DeviceAudioOut extends Device {
 
     public void play(MediaItem item)
     {
+        log.info("Start playing "+item.getDescription().getTitle());
         itemBeingPlayed=item;
 
         playerHandler.play(item);

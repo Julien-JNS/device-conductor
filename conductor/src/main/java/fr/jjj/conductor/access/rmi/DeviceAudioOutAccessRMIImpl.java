@@ -46,7 +46,11 @@ public class DeviceAudioOutAccessRMIImpl extends DeviceAccessRMIImpl implements 
     @Override
     public void play(MediaItemDesc itemDesc) {
         log.info("Received request to play "+itemDesc.getTitle());
-        ((DeviceAudioOut)device).play(MediaItem.getMediaItem(itemDesc));
+        log.info("Device="+device);
+        log.info("Device(cast)="+(DeviceAudioOut)device);
+        MediaItem mediaItem = MediaItem.getMediaItem(itemDesc);
+        log.info("Media item ="+mediaItem);
+        ((DeviceAudioOut)device).play(mediaItem);
     }
 
 
