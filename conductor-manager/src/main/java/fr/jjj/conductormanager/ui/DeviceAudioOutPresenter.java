@@ -23,6 +23,8 @@ public class DeviceAudioOutPresenter {
 
     private Map<String, MediaItemDesc> currentMediaItems=new HashMap<String, MediaItemDesc>();
 
+    private Map<String, MediaItemDesc> currentMediaItemsInQueue=new HashMap<String, MediaItemDesc>();
+
     public DeviceAudioOutPresenter(DeviceAudioOutView view) {
         this.view = view;
     }
@@ -40,7 +42,14 @@ public class DeviceAudioOutPresenter {
         try {
             System.out.println("Requesting audio device queue from distant conductor...");
             queue = access.getQueue();
+
             log.info("Received audio device queue from distant conductor (size=" + queue.size() + ").");
+            currentMediaItemsInQueue.clear();
+            for(MediaItemDesc mediaItemDesc:queue)
+            {
+                currentMediaItemsInQueue.put(mediaItemDesc.getTitle(),mediaItemDesc);
+            }
+
         } catch (RemoteException e) {
             e.printStackTrace();
             log.error("Could not get audio device queue from distant conductor!");
@@ -115,7 +124,9 @@ public class DeviceAudioOutPresenter {
         DeviceAudioOutAccessRMI access=getDeviceAccess();
 
         try {
-            access.addToQueue(currentMediaItems.get(refItem));
+            MediaItemDesc mediaItemDesc = currentMediaItems.get(refItem);
+            log.info("Item desc="+mediaItemDesc+" ("+mediaItemDesc.getTitle()+")");
+            access.addToQueue(mediaItemDesc);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -125,7 +136,9 @@ public class DeviceAudioOutPresenter {
     {
         log.info("Received request to play "+item);
         try {
-            getDeviceAccess().play(new MediaItemDesc(mediaSource,item));
+            MediaItemDesc mediaItemDesc = currentMediaItemsInQueue.get(item);
+            log.info("Item desc="+mediaItemDesc+" ("+mediaItemDesc.getTitle()+")");
+            getDeviceAccess().play(mediaItemDesc);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

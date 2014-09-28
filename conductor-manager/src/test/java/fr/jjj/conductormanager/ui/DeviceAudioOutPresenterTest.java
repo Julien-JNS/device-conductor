@@ -1,7 +1,7 @@
 package fr.jjj.conductormanager.ui;
 
-import fr.jjj.conductor.ConductorFactory;
-import fr.jjj.conductor.ConductorImpl;
+//import fr.jjj.conductor.ConductorFactory;
+//import fr.jjj.conductor.ConductorImpl;
 import fr.jjj.conductormanager.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +16,7 @@ public class DeviceAudioOutPresenterTest implements DeviceAudioOutView{
 
     private DeviceAudioOutPresenter presenter;
 
-    private static ConductorImpl conductor;
+    //private static ConductorImpl conductor;
 
     @Before
     public void initialize() {
@@ -24,7 +24,7 @@ public class DeviceAudioOutPresenterTest implements DeviceAudioOutView{
         TestUtils.initializeConfig();
         TestUtils.initializeManagerConfig();
 
-        conductor = ConductorFactory.getInstance().getConductor();
+        //conductor = ConductorFactory.getInstance().getConductor();
         presenter=new DeviceAudioOutPresenter(this);
     }
 
@@ -36,8 +36,8 @@ public class DeviceAudioOutPresenterTest implements DeviceAudioOutView{
     @Test
     public void testSetMediaSource()
     {
-        presenter.setDevice(TestUtils.DEVICE_LABELS[0]);
-        presenter.setMediaSource(TestUtils.RESOURCE_LABELS[0]);
+//        presenter.setDevice(TestUtils.DEVICE_LABELS[0]);
+//        presenter.setMediaSource(TestUtils.RESOURCE_LABELS[0]);
     }
 
 
