@@ -39,10 +39,9 @@
         </dependency>
 
         <dependency>
-            <groupId>fr.jjj.conductor</groupId>
-            <artifactId>conductor</artifactId>
-            <version>0.0.0</version>
-            <classifier>shared</classifier>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.0</version>
         </dependency>
 
         <dependency>

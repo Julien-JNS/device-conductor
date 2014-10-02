@@ -1,4 +1,4 @@
-package fr.jjj.conductormanager.standalone;
+package fr.jjj.conductormanager.client;
 
 import fr.jjj.conductormanager.ui.DeviceAudioOutView;
 import fr.jjj.conductormanager.ui.StatusView;
@@ -21,7 +21,6 @@ public class ConductorManagerFrame extends JFrame implements StatusView,DeviceAu
     {
         status=new JLabel();
         add(status);
-
     }
 
     @Override

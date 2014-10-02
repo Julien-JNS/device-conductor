@@ -22,6 +22,8 @@ public class TestUtils {
 
     public static final String CONFIG_MANAGER = "[{'host': '127.0.0.1','port': '4056'}]";
 
+    public static final String FILESYSTEM_START="./tmp";
+
     public static final String CONFIG = "{'label':'"+CONDUCTOR_LABEL+"','networkConfig': {'host': '127.0.0.1','port': '4056'}," +
             "'devices': " +
             "[{'type': 'audio-out','label':'" + DEVICE_LABELS[0] + "','bridge':'omxplayer'}," +
@@ -62,6 +64,18 @@ public class TestUtils {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    static public void initializeFileSystem() {
+        try {
+            new File(TestUtils.FILESYSTEM_START).mkdirs();
+            new File(TestUtils.FILESYSTEM_START+File.separator+"test.mp3").createNewFile();
+            new File(TestUtils.FILESYSTEM_START+File.separator+"dir").mkdirs();
+            new File(TestUtils.FILESYSTEM_START+File.separator+"dir"+File.separator+"test1.mp3").createNewFile();
+            new File(TestUtils.FILESYSTEM_START+File.separator+"dir"+File.separator+"test2.mp3").createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 }

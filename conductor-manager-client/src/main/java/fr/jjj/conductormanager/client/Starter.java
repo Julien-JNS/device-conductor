@@ -1,4 +1,4 @@
-package fr.jjj.conductormanager.standalone;
+package fr.jjj.conductormanager.client;
 
 /**
  * Created with IntelliJ IDEA.
