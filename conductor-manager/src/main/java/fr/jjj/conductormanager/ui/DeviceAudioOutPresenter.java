@@ -2,6 +2,7 @@ package fr.jjj.conductormanager.ui;
 
 import fr.jjj.conductor.access.rmi.ConductorAccessRMI;
 import fr.jjj.conductor.access.rmi.DeviceAudioOutAccessRMI;
+import fr.jjj.conductor.model.DeviceDesc;
 import fr.jjj.conductor.model.MediaItemDesc;
 import fr.jjj.conductormanager.ConductorRegistry;
 import org.apache.commons.logging.Log;
@@ -14,6 +15,11 @@ import java.util.*;
  * Created by Jaunais on 11/08/2014.
  */
 public class DeviceAudioOutPresenter {
+
+    public enum Command
+    {
+        PLAY,PREV,NEXT,PAUSE,STOP,VOLUP,VOLDOWN;
+    }
 
     private Log log = LogFactory.getLog(this.getClass());
 
@@ -144,6 +150,17 @@ public class DeviceAudioOutPresenter {
         }
     }
 
+    public void command(Command command)
+    {
+        log.info("Received command request "+command);
+        try {
+
+            getDeviceAccess().command(convertToServer(command));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     private ConductorAccessRMI getConductorAccess()
     {
         ConductorAccessRMI access = ConductorRegistry.INSTANCE.getConductorAccessForDevice(deviceLabel);
@@ -157,4 +174,32 @@ public class DeviceAudioOutPresenter {
         log.info("access to device: " + access);
         return access;
     }
+
+    private DeviceDesc.Command convertToServer(Command command)
+    {
+        DeviceDesc.Command serverCommand=null;
+        switch(command)
+        {
+            case VOLUP:
+                serverCommand=DeviceDesc.Command.VOLUP;
+                break;
+            case VOLDOWN:
+                serverCommand=DeviceDesc.Command.VOLDOWN;
+                break;
+            case PAUSE:
+                serverCommand=DeviceDesc.Command.PAUSE;
+                break;
+            case NEXT:
+                serverCommand=DeviceDesc.Command.NEXT;
+                break;
+            case PREV:
+                serverCommand=DeviceDesc.Command.PREV;
+                break;
+            case STOP:
+                serverCommand=DeviceDesc.Command.STOP;
+                break;
+        }
+        return serverCommand;
+    }
+
 }

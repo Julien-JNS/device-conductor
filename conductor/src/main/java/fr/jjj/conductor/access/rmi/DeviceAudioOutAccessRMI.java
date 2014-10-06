@@ -1,5 +1,6 @@
 package fr.jjj.conductor.access.rmi;
 
+import fr.jjj.conductor.model.DeviceDesc;
 import fr.jjj.conductor.model.MediaItemDesc;
 
 import java.rmi.RemoteException;
@@ -15,6 +16,8 @@ public interface DeviceAudioOutAccessRMI extends DeviceAccessRMI {
     void addToQueue(MediaItemDesc item) throws RemoteException;
 
     void play(MediaItemDesc item) throws RemoteException;
+
+    void command(DeviceDesc.Command command) throws RemoteException;
 
 
 

@@ -7,6 +7,11 @@ import java.io.Serializable;
  */
 public class DeviceDesc implements Serializable{
 
+    public enum Command
+    {
+        PLAY,NEXT,PREV,PAUSE,STOP,VOLUP,VOLDOWN;
+    }
+
     private String label;
 
     private String type;

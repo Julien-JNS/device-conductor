@@ -15,6 +15,8 @@ public class PlayerHandler {
 
     private Log log= LogFactory.getLog(this.getClass());
 
+    private Process process;
+
     private String playerCommand;
 
     private String defaultOptions;
@@ -38,12 +40,17 @@ public class PlayerHandler {
         command.add(playerCommand);
         command.addAll(Arrays.asList(defaultOptions.split(" ")));
         command.add(item.getMediaSource().getItemArg(item.getDescription().getTitle(),itemArgFormat));
-        log.info("Player command: "+command.toArray());
+        StringBuilder builder=new StringBuilder();
+        for (String str : command) {
+            builder.append(str);
+            builder.append(" ");
+        }
+        log.info("Player command: "+ builder.toString());
         try {
             ProcessBuilder pb = new ProcessBuilder(command.toArray(new String[command.size()]));
-            Process p = pb.start();
-            outputStream = p.getOutputStream();
-            final InputStream inputStream = p.getInputStream();
+            process = pb.start();
+            outputStream = process.getOutputStream();
+            final InputStream inputStream = process.getInputStream();
             new Thread(new Runnable(){
                 @Override
                 public void run() {
@@ -58,10 +65,14 @@ public class PlayerHandler {
                     }
                 }
             }).start();
-            p.waitFor();
+            try {
+                process.waitFor();
+                outputStream.close();
+                inputStream.close();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -91,4 +102,44 @@ public class PlayerHandler {
         }
     }
 
+    public void command(DeviceDesc.Command action)
+    {
+        switch(action)
+        {
+            case VOLDOWN:
+                pressKey("-");
+                break;
+            case VOLUP:
+                pressKey("+");
+                break;
+            case NEXT:
+                break;
+            case PREV:
+                break;
+            case PAUSE:
+                pressKey("p");
+                break;
+            case STOP:
+                process.destroy();
+                break;
+            default:
+                break;
+
+        }
+
+    }
+
+    private void pressKey(String key)
+    {
+        log.info("Process="+process);
+        OutputStream stream=process.getOutputStream();
+        log.info("Outputstream="+stream);
+        try {
+            stream.write(key.getBytes());
+            stream.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

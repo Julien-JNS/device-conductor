@@ -1,9 +1,6 @@
 package fr.jjj.conductor.access.rmi;
 
-import fr.jjj.conductor.model.Device;
-import fr.jjj.conductor.model.DeviceAudioOut;
-import fr.jjj.conductor.model.MediaItem;
-import fr.jjj.conductor.model.MediaItemDesc;
+import fr.jjj.conductor.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -53,5 +50,11 @@ public class DeviceAudioOutAccessRMIImpl extends DeviceAccessRMIImpl implements 
         ((DeviceAudioOut)device).play(mediaItem);
     }
 
-
+    @Override
+    public void command(DeviceDesc.Command command) throws RemoteException {
+        log.info("Received command request "+command);
+        log.info("Device="+device);
+        log.info("Device(cast)="+(DeviceAudioOut)device);
+        ((DeviceAudioOut)device).command(command);
+    }
 }
