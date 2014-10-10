@@ -23,7 +23,7 @@ public class TestUtils {
 
     public static final String CONFIG1 = "{'label':'"+CONDUCTOR_LABEL+"','networkConfig': {'host': '127.0.0.1','port': '4056'}," +
             "'devices': " +
-            "[{'type': 'audio-out','label':'" + DEVICE_LABELS[0] + "','bridge':'omxplayer'}," +
+            "[{'type': 'audio-out','label':'" + DEVICE_LABELS[0] + "','bridge':'testplayer'}," +
             "{'type': 'video-in','label':'" + DEVICE_LABELS[1] + "','bridge': 'xxx'}]," +
             "'resources':" +
             "[{'type': 'filesystem','label': '"+RESOURCE_LABELS[0]+"','start': '"+FILESYSTEM_START+"'}," +

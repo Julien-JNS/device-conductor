@@ -27,6 +27,8 @@ public class DeviceAudioOut extends Device {
 
     private boolean keepPlaying=false;
 
+    private DeviceAudioOutListener listener;
+
     public DeviceAudioOut(String label,String bridge)
     {
         super(label,"audio-out");
@@ -37,6 +39,17 @@ public class DeviceAudioOut extends Device {
             log.info("Init omx player handler");
             playerHandler =new OmxHandler();
         }
+        else
+        {
+            log.info("Init test player handler");
+            playerHandler =new TestHandler();
+        }
+
+    }
+
+    public void setListener(DeviceAudioOutListener listener)
+    {
+          this.listener=listener;
     }
 
     public String getBridge() {
@@ -110,7 +123,7 @@ public class DeviceAudioOut extends Device {
         if(itemBeingPlayed!=null) {
             int currentIndex = getQueue().indexOf(itemBeingPlayed);
             log.info("currently playing "+itemBeingPlayed.getDescription().getTitle()+" (index "+currentIndex+")");
-            int nextIndex = currentIndex + indexShift % getQueue().size();
+            int nextIndex = (currentIndex + indexShift) % getQueue().size();
             MediaItem nextItem=getQueue().get(nextIndex);
             itemBeingPlayed=nextItem;
             log.info("now playing "+itemBeingPlayed.getDescription().getTitle()+" (index "+nextIndex+")");
@@ -128,7 +141,7 @@ public class DeviceAudioOut extends Device {
         public void run() {
             while(keepPlaying)
             {
-                log.info("Loop iteration, item="+itemToPlay);
+                log.info("Loop iteration, item="+itemToPlay.getDescription().getTitle());
                 playerHandler.play(itemToPlay);
                 if(!ignoreShift) {
                     log.info("Do shift");

@@ -8,7 +8,7 @@ import java.util.List;
 public abstract class Resource {
 
     protected enum ItemArgFormat {
-        URL;
+        NONE,URL;
     }
 
     private String label;

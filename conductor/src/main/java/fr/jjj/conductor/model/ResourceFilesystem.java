@@ -99,6 +99,9 @@ public class ResourceFilesystem extends Resource{
             case URL:
                 itemArg=currentLocation+"/"+item;
                 break;
+            case NONE:
+            itemArg="";
+                break;
             default:
                 break;
 

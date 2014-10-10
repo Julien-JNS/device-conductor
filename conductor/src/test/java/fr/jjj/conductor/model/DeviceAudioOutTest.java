@@ -36,5 +36,18 @@ public class DeviceAudioOutTest {
 
     }
 
+    @Test
+    public void testPlay() throws Exception {
+        MediaItem item1 = new MediaItem(new MediaItemDesc("1", "Chanson 1"), resource, "");
+        MediaItem item2 = new MediaItem(new MediaItemDesc("2", "Chanson 2"), resource, "");
+
+        device.addToQueue(item1);
+        device.addToQueue(item2);
+
+        device.play(item1);
+
+        Thread.sleep(100000);
+
+    }
 
 }
