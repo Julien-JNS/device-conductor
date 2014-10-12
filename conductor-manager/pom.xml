@@ -19,18 +19,6 @@
 
     <dependencies>
 
-        <!--dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>2.4.3</version>
-        </dependency-->
-
-        <!--dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.3.2</version>
-        </dependency-->
-
         <dependency>
             <groupId>fr.jjj.conductor</groupId>
             <artifactId>conductor</artifactId>
@@ -43,6 +31,13 @@
             <artifactId>conductor</artifactId>
             <version>0.0.0</version>
             <classifier>shared</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.jjj.conductor</groupId>
+            <artifactId>conductor</artifactId>
+            <version>0.0.0</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -75,6 +70,7 @@
             <artifactId>commons-logging</artifactId>
             <version>1.1.3</version>
         </dependency>
+
     </dependencies>
 
 </project>

@@ -4,6 +4,7 @@ import fr.jjj.conductor.Conductor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.print.attribute.standard.Media;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class DeviceAudioOut extends Device {
 
-    private Log log= LogFactory.getLog(this.getClass());
+    private Log log = LogFactory.getLog(this.getClass());
 
     private String bridge;
 
@@ -25,91 +26,77 @@ public class DeviceAudioOut extends Device {
 
     private PlayingThread playingThread;
 
-    private boolean keepPlaying=false;
+    private boolean keepPlaying = false;
 
     private DeviceAudioOutListener listener;
 
-    public DeviceAudioOut(String label,String bridge)
-    {
-        super(label,"audio-out");
-        queue=new ArrayList<MediaItem>();
+    public DeviceAudioOut(String label, String bridge) {
+        super(label, "audio-out");
+        queue = new ArrayList<MediaItem>();
 
-        if(bridge.equals("omxplayer"))
-        {
+        if (bridge.equals("omxplayer")) {
             log.info("Init omx player handler");
-            playerHandler =new OmxHandler();
-        }
-        else
-        {
+            playerHandler = new OmxHandler();
+        } else {
             log.info("Init test player handler");
-            playerHandler =new TestHandler();
+            playerHandler = new TestHandler();
         }
 
     }
 
-    public void setListener(DeviceAudioOutListener listener)
-    {
-          this.listener=listener;
+    public void setListener(DeviceAudioOutListener listener) {
+        this.listener = listener;
     }
 
     public String getBridge() {
         return bridge;
     }
 
-    public void addToQueue(MediaItem item)
-    {
-        Resource resource=item.getMediaSource();
-        log.info("Resource: "+resource);
-        List<MediaItem> items=resource.getMediaItems(item);
-        Iterator<MediaItem> it=items.iterator();
-        while(it.hasNext())
-        {
-            MediaItem newItem=it.next();
+    public void addToQueue(MediaItem item) {
+        Resource resource = item.getMediaSource();
+        log.info("Resource: " + resource);
+        List<MediaItem> items = resource.getMediaItems(item);
+        Iterator<MediaItem> it = items.iterator();
+        while (it.hasNext()) {
+            MediaItem newItem = it.next();
             queue.add(newItem);
             System.out.println("added in queue:" + newItem.getDescription().getTitle());
         }
-        System.out.println("queue size:"+queue.size());
+        System.out.println("queue size:" + queue.size());
     }
 
-    public List<MediaItem> getQueue()
-    {
-        System.out.println("get gueue queue size:"+queue.size());
+    public List<MediaItem> getQueue() {
+        System.out.println("get gueue queue size:" + queue.size());
         //TODO send a copy?
         return queue;
     }
 
-    public void play(MediaItem item)
-    {
-        log.info("Start playing "+item.getDescription().getTitle());
-        itemBeingPlayed=item;
+    public void play(MediaItem item) {
+        log.info("Start playing " + item.getDescription().getTitle());
 
-        if(playingThread==null)
-        {
+        if (playingThread == null) {
             log.info("Init playing thread");
-            keepPlaying=true;
-            playingThread=new PlayingThread();
-            playingThread.setItemToPlay(itemBeingPlayed);
+            keepPlaying = true;
+            playingThread = new PlayingThread();
+            playingThread.setItemToPlay(item);
             playingThread.start();
-        }else
-        {
-            playingThread.restart();
+        } else {
+            playingThread.jump(item);
         }
     }
 
-    public void command(DeviceDesc.Command command)
-    {
-        log.info("Sending command "+command);
-        log.info("player handler= "+playerHandler);
-        switch(command)
-        {
+    public void command(DeviceDesc.Command command) {
+        log.info("Sending command " + command);
+        log.info("player handler= " + playerHandler);
+        switch (command) {
             case NEXT:
-                shiftPlayedIndex(1);
+                playingThread.jump(1);
                 break;
             case PREV:
-                shiftPlayedIndex(-1);
+                playingThread.jump(-1);
             case STOP:
-                itemBeingPlayed=null;
-                keepPlaying=false;
+                itemBeingPlayed = null;
+                keepPlaying = false;
                 playerHandler.command(DeviceDesc.Command.STOP);
                 break;
             default:
@@ -119,38 +106,30 @@ public class DeviceAudioOut extends Device {
 
     }
 
-    private void shiftPlayedIndex(int indexShift) {
-        if(itemBeingPlayed!=null) {
-            int currentIndex = getQueue().indexOf(itemBeingPlayed);
-            log.info("currently playing "+itemBeingPlayed.getDescription().getTitle()+" (index "+currentIndex+")");
-            int nextIndex = (currentIndex + indexShift) % getQueue().size();
-            MediaItem nextItem=getQueue().get(nextIndex);
-            itemBeingPlayed=nextItem;
-            log.info("now playing "+itemBeingPlayed.getDescription().getTitle()+" (index "+nextIndex+")");
-            playingThread.setItemToPlay(itemBeingPlayed);
+    private void updateStatus(MediaItem item) {
+        itemBeingPlayed = item;
+        if(listener!=null) {
+            listener.nowPlaying(item);
         }
     }
 
-    private class PlayingThread extends Thread
-    {
+    private class PlayingThread extends Thread {
         private MediaItem itemToPlay;
 
-        private boolean ignoreShift=false;
+        private boolean ignoreShift = false;
 
         @Override
         public void run() {
-            while(keepPlaying)
-            {
-                log.info("Loop iteration, item="+itemToPlay.getDescription().getTitle());
+            while (keepPlaying) {
+                log.info("Loop iteration, item=" + itemToPlay.getDescription().getTitle());
+                updateStatus(itemToPlay);
                 playerHandler.play(itemToPlay);
-                if(!ignoreShift) {
+                if (!ignoreShift) {
                     log.info("Do shift");
-                    shiftPlayedIndex(1);
-                }
-                else
-                {
+                    setItemToPlay(getNextItem(1));
+                } else {
                     log.info("No shift");
-                    ignoreShift=false;
+                    ignoreShift = false;
                 }
             }
             log.info("Loop exit");
@@ -160,10 +139,25 @@ public class DeviceAudioOut extends Device {
             this.itemToPlay = itemToPlay;
         }
 
-        public void restart()
-        {
-            ignoreShift=true;
+        public void jump(MediaItem item) {
+            setItemToPlay(item);
+            ignoreShift = true;
             playerHandler.command(DeviceDesc.Command.STOP);
+        }
+
+        public void jump(int indexShift) {
+            jump(getNextItem(indexShift));
+        }
+
+        private MediaItem getNextItem(int indexShift) {
+            MediaItem nextItem = null;
+            int currentIndex = 0;
+            if (itemToPlay != null) {
+                currentIndex = getQueue().indexOf(itemToPlay);
+            }
+            int nextIndex = (currentIndex + indexShift) % getQueue().size();
+            nextItem = getQueue().get(nextIndex);
+            return nextItem;
         }
     }
 }

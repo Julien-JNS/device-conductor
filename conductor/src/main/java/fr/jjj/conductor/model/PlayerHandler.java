@@ -58,7 +58,7 @@ public class PlayerHandler {
                     String line = "";
                     try {
                         while ((line = br.readLine()) != null) {
-                            log.info(line);
+//                            log.info(line);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -75,7 +75,6 @@ public class PlayerHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void action(Action action)

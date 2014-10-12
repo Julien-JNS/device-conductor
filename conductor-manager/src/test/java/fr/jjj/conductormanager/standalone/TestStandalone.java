@@ -11,7 +11,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.Any;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,8 +23,6 @@ public class TestStandalone {
 
     @Mock
     StatusView statusView;
-
-    private  StatusPresenter statusPresenter;
 
     private  StatusPresenter statusPresenter;
 

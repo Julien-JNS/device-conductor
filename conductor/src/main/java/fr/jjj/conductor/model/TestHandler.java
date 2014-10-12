@@ -10,6 +10,9 @@ package fr.jjj.conductor.model;
 public class TestHandler extends PlayerHandler {
 
     public TestHandler() {
-        super("sleep", "10",Resource.ItemArgFormat.NONE);
+//        super("timeout", "10",Resource.ItemArgFormat.NONE);
+        super("ping", "127.0.0.1 -n 10",Resource.ItemArgFormat.NONE);
     }
+
+
 }

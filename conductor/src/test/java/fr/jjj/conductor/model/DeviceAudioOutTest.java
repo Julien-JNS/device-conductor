@@ -2,6 +2,9 @@ package fr.jjj.conductor.model;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Iterator;
 import java.util.List;
@@ -14,11 +17,18 @@ public class DeviceAudioOutTest {
 
     private static Resource resource;
 
+    @Mock
+    DeviceAudioOutListener listener;
+
 
     @Before
     public void initialize() {
         device = new DeviceAudioOut("deviceAudioOut","OMX");
         resource=new ResourceFilesystem("freebox","");
+
+        MockitoAnnotations.initMocks(this);
+
+        device.setListener(listener);
     }
 
     @Test
@@ -46,7 +56,11 @@ public class DeviceAudioOutTest {
 
         device.play(item1);
 
-        Thread.sleep(100000);
+        Thread.sleep(2000);
+
+        Mockito.verify(listener,Mockito.times(1)).nowPlaying(item1);
+        Thread.sleep(10000);
+        Mockito.verify(listener,Mockito.times(1)).nowPlaying(item2);
 
     }
 
