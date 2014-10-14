@@ -64,4 +64,47 @@ public class DeviceAudioOutTest {
 
     }
 
+    @Test
+    public void testNext() throws Exception {
+        MediaItem item1 = new MediaItem(new MediaItemDesc("1", "Chanson 1"), resource, "");
+        MediaItem item2 = new MediaItem(new MediaItemDesc("2", "Chanson 2"), resource, "");
+
+        device.addToQueue(item1);
+        device.addToQueue(item2);
+
+        device.play(item1);
+
+        Thread.sleep(1000);
+
+        Mockito.verify(listener,Mockito.times(1)).nowPlaying(item1);
+
+        device.command(DeviceDesc.Command.NEXT);
+
+        Thread.sleep(1000);
+        Mockito.verify(listener,Mockito.times(1)).nowPlaying(item2);
+
+    }
+
+    @Test
+    public void testPrevious() throws Exception {
+        MediaItem item1 = new MediaItem(new MediaItemDesc("1", "Chanson 1"), resource, "");
+        MediaItem item2 = new MediaItem(new MediaItemDesc("2", "Chanson 2"), resource, "");
+        MediaItem item3 = new MediaItem(new MediaItemDesc("3", "Chanson 3"), resource, "");
+
+        device.addToQueue(item1);
+        device.addToQueue(item2);
+        device.addToQueue(item3);
+
+        device.play(item1);
+
+        Thread.sleep(1000);
+
+        Mockito.verify(listener,Mockito.times(1)).nowPlaying(item1);
+
+        device.command(DeviceDesc.Command.PREV);
+
+        Thread.sleep(1000);
+        Mockito.verify(listener,Mockito.times(1)).nowPlaying(item3);
+
+    }
 }

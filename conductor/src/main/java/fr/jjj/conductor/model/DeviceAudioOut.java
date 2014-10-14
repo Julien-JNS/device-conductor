@@ -156,6 +156,10 @@ public class DeviceAudioOut extends Device {
                 currentIndex = getQueue().indexOf(itemToPlay);
             }
             int nextIndex = (currentIndex + indexShift) % getQueue().size();
+            if(nextIndex<0)// Modulus can give negative result
+            {
+                nextIndex+=getQueue().size();
+            }
             nextItem = getQueue().get(nextIndex);
             return nextItem;
         }

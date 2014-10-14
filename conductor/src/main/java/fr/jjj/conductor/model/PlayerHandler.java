@@ -50,25 +50,25 @@ public class PlayerHandler {
             ProcessBuilder pb = new ProcessBuilder(command.toArray(new String[command.size()]));
             process = pb.start();
             outputStream = process.getOutputStream();
-            final InputStream inputStream = process.getInputStream();
-            new Thread(new Runnable(){
-                @Override
-                public void run() {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-                    String line = "";
-                    try {
-                        while ((line = br.readLine()) != null) {
-//                            log.info(line);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+//            final InputStream inputStream = process.getInputStream();
+//            new Thread(new Runnable(){
+//                @Override
+//                public void run() {
+//                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+//                    String line = "";
+//                    try {
+//                        while ((line = br.readLine()) != null) {
+////                            log.info(line);
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
             try {
                 process.waitFor();
                 outputStream.close();
-                inputStream.close();
+//                inputStream.close();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
