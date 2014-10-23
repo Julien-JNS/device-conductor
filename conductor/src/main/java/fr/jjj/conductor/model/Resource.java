@@ -28,7 +28,7 @@ public abstract class Resource {
 
     public abstract List<MediaItem> getMediaItems(MediaItem requestedItem);
 
-    public String getItemArg(String item, ItemArgFormat format) {
+    public String getItemArg(MediaItem item, ItemArgFormat format) {
         return null;
     }
 }

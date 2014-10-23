@@ -1,13 +1,18 @@
 package fr.jjj.conductor.model;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
+import com.google.common.io.Closeables;
 import com.google.gson.Gson;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import org.apache.http.client.utils.URIBuilder;
 import sun.net.www.content.text.PlainTextInputStream;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -28,7 +33,7 @@ public class ResourceGoogleMusic extends Resource{
 
     private boolean connected=false;
 
-    private Map<String,MediaItem> playlistMap;
+    private Map<String,MediaItem> playlistMap=new HashMap<String, MediaItem>();
 
     public ResourceGoogleMusic(String label) {
         super(label);
@@ -235,7 +240,7 @@ public class ResourceGoogleMusic extends Resource{
             Playlist pl=it.next();
             System.out.println(pl.getName()+"("+pl.getId()+")");
 
-            MediaItem subItem = new MediaItem(new MediaItemDesc(pl.getId(), pl.getName()), this, "Playlists");
+            MediaItem subItem = new MediaItem(new MediaItemDesc(pl.getId(), pl.getName()), this, getLocation());
             playlistMap.put(pl.getId(),subItem);
             list.add(subItem);
             rootItems.get(PLAYLISTS).addSubItem(subItem);
@@ -298,6 +303,7 @@ public class ResourceGoogleMusic extends Resource{
 
             MediaItem playlistItem=new MediaItem(new MediaItemDesc(ple.getTrackId(),ple.getTrack().getTitle()),this,getLocation());
             pl.addSubItem(playlistItem);
+
         }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -308,7 +314,141 @@ public class ResourceGoogleMusic extends Resource{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return list;
+        return item.getSubItems();
+    }
+
+    @Override
+    public String getItemArg(MediaItem item, ItemArgFormat format) {
+        String itemArg = null;
+        switch (format) {
+            case URL:
+                itemArg = getUrl(item);
+                break;
+            case NONE:
+                itemArg = "";
+                break;
+            default:
+                break;
+
+        }
+        return itemArg;
+    }
+
+    private String getUrl(MediaItem item)
+    {
+        String trackId = item.getDescription().getId();
+        System.out.println("trackId="+ trackId);
+
+        // GET URL
+
+        // URL url4 = new URL("https://play.google.com/music/play");
+        String key = "27f7313e-f75d-445a-ac99-56386a5fe879";
+        //PYTHON (random string of 12 chars): salt = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(12))
+        String salt ="3jvqih1eylpn";
+        char[] ALPHANUM_LOWERCASE = ("abcdefghijklmnopqrstuvwxyz" + "0123456789").toCharArray();
+        char[] buf=new char[12];
+        Random random=new Random();
+        for (int idx = 0; idx < buf.length; ++idx)
+            buf[idx] = ALPHANUM_LOWERCASE[random.nextInt(ALPHANUM_LOWERCASE.length)];
+        salt=new String(buf);
+        String sig="";
+        try {
+            String HMAC_SHA1_ALGORITHM="HmacSHA1";
+// get an hmac_sha1 key from the raw key bytes
+            SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), HMAC_SHA1_ALGORITHM);
+
+// get an hmac_sha1 Mac instance and initialize with the signing keycookie
+            Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
+            mac.init(signingKey);
+
+// compute the hmac on input data bytes
+            byte[] rawHmac = mac.doFinal((trackId + salt).getBytes());
+
+// base64-encode the hmac
+            sig = Base64.encode(rawHmac);
+
+            // NEED TO REMOVE LAST '=' character
+            sig=sig.replace("=","");
+            //MAKING IT URL SAFE (convention  '+/=' --> '-_,' )
+            sig=sig.replace("+","-");
+            sig=sig.replace("/","_");
+
+
+        } catch (Exception e) {
+            System.out.println("Failed to generate HMAC : " + e.getMessage());
+        }
+
+        System.out.println("salt="+salt);
+        System.out.println("sig="+sig);
+
+
+        //...FROM MOBILE API
+        //{'url': 'https://android.clients.google.com/music/mplay', 'verify': False, 'headers': {'X-Device-ID': '3995365710237556049', 'Authorization': u'GoogleLogin auth=DQAAAM8AAAAEItRi5eqFUPVsvXy1ZPC2TsmnWrX82sFIdf_upfJDyD7l__ADKZ-9UlLlImvQlV1gvBSAs8KeQhj01ADMjRpfJe5AHwAfUd6BGBwezXtsDLIKp8ShvxTUuxoQHYBTEPGXxnrnxMapxcKunhMcjqAP2y3zXCTG5RfT8729tjVLn4x_xijuI8me4qKlKwusOsaeE7bMcLwW26HaheCD_sdPFxbqw4fP96ni8i4BOMecun-zScwjpxMiGQ5ioEx9vM9OU18grsb6EW5WvokGB4jy'}, 'params': {'opt': 'hi', 'mjck': 'Tcjindectc67jbhwgnast4kx5gu', 'pt': 'e', 'slt': '1403640096444', 'sig': 'quD_mcS5neZF_MK-QGQ12kOjsBs', 'net': 'wifi'}, 'allow_redirects': False, 'method': 'GET'}
+
+        URI url6= null;
+        try {
+            url6 = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("android.clients.google.com")
+    //                    .setPort(8080)
+                    .setPath("/music/mplay")
+                    .addParameter("opt", "hi")
+                    .addParameter("net", "wifi")
+                    .addParameter("slt", salt)
+                    .addParameter("sig", sig)
+                    .addParameter("mjck", trackId)
+                    .addParameter("u", "0")
+                    .addParameter("pt", "e")
+                    .build();
+
+        HttpURLConnection conn6 = (HttpURLConnection) (url6.toURL()).openConnection();
+        System.out.println("conn6.getURL()="+conn6.getURL());
+
+        conn6.setRequestMethod("GET");
+        // conn6.setRequestProperty("Accept-Encoding", "gzip,deflate");
+        for (String cookie : cookies) {
+            conn6.setRequestProperty("Cookie", cookie.split(";", 1)[0]);
+        }
+        //conn6.setRequestProperty("allow_redirects","False");
+        conn6.setInstanceFollowRedirects(false);
+        conn6.setRequestProperty("Authorization", "GoogleLogin auth=" + authToken);
+        conn6.setRequestProperty("X-Device-ID", "3995365710237556049");
+        conn6.connect();
+        System.out.println("headers6="+conn6.getHeaderFields());
+        System.out.println("url to mp3:"+conn6.getHeaderField("Location"));
+
+            return conn6.getHeaderField("Location");
+//
+
+
+    } catch (
+    MalformedURLException e
+    )
+
+    {
+        e.printStackTrace();
+    } catch (
+    ProtocolException e
+    )
+
+    {
+        e.printStackTrace();
+    } catch (
+    UnsupportedEncodingException e
+    )
+
+    {
+        e.printStackTrace();
+    } catch (
+    IOException e
+    )
+
+    {
+        e.printStackTrace();
+    } catch (URISyntaxException e) {
+        e.printStackTrace();
+    }
+return null;
     }
 
     private String getLocation()
@@ -480,5 +620,26 @@ public class ResourceGoogleMusic extends Resource{
         int end=str.indexOf(suffix,start);
         value=str.substring(start,end);
         return value;
+    }
+
+    public static String getStringFromInputStream(final InputStream is)
+            throws IOException
+    {
+        return toString(is, Charsets.UTF_8);
+    }
+
+    public static String toString(final InputStream is, final Charset cs)
+            throws IOException
+    {
+        Closeable closeMe = is;
+        try
+        {
+            final InputStreamReader isr = new InputStreamReader(is, cs);
+            closeMe = isr;
+            return CharStreams.toString(isr);
+        } finally
+        {
+            Closeables.close(closeMe, true);
+        }
     }
 }

@@ -39,7 +39,7 @@ public class PlayerHandler {
         List<String> command=new ArrayList<String>();
         command.add(playerCommand);
         command.addAll(Arrays.asList(defaultOptions.split(" ")));
-        command.add(item.getMediaSource().getItemArg(item.getDescription().getTitle(),itemArgFormat));
+        command.add(item.getMediaSource().getItemArg(item,itemArgFormat));
         StringBuilder builder=new StringBuilder();
         for (String str : command) {
             builder.append(str);

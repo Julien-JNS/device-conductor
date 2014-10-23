@@ -3,6 +3,7 @@ package fr.jjj.conductor.model;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.print.attribute.standard.Media;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,11 +83,11 @@ public class ResourceFilesystem extends Resource {
     }
 
     @Override
-    public String getItemArg(String item, ItemArgFormat format) {
+    public String getItemArg(MediaItem item, ItemArgFormat format) {
         String itemArg = null;
         switch (format) {
             case URL:
-                itemArg = currentLocation + "/" + item;
+                itemArg = currentLocation + "/" + item.getDescription().getTitle();
                 break;
             case NONE:
                 itemArg = "";
