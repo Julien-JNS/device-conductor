@@ -85,7 +85,7 @@ public class DeviceAudioOutPresenter {
     public void setMediaSource(String mediaSource)
     {
         this.mediaSource=mediaSource;
-        log.info("Media sources '" + mediaSource + "' selected for audio device " + deviceLabel + "...");
+        log.info("Media source '" + mediaSource + "' selected for audio device " + deviceLabel + "...");
 
         updateNavItems("");
     }
@@ -99,10 +99,11 @@ public class DeviceAudioOutPresenter {
     private void updateNavItems(String refItem)
     {
         log.info("Updating nav items to '" + refItem+"'");
+        MediaItemDesc refItemDesc=currentMediaItems.get(refItem);
         ConductorAccessRMI access = getConductorAccess();
 
         try {
-            List<MediaItemDesc> items=access.getNavItems(mediaSource, refItem);
+            List<MediaItemDesc> items=access.getNavItems(mediaSource, refItemDesc);
             log.info("Received " + items.size() + " items from conductor");
             List<String> titles=new ArrayList<String>();
             Iterator<MediaItemDesc> it=items.iterator();
