@@ -73,7 +73,9 @@ public class DeviceAudioOutAccessRMIImplTest {
             for(MediaItemDesc mediaItemDesc:conductorAccess.getNavItems(mediaSource,null))
             {
                 testedAccess.addToQueue(mediaItemDesc);
+
             }
+
         }
 
         testedQueue=testedAccess.getQueue();

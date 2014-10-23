@@ -92,9 +92,9 @@ public class ConductorAccessRMIImpl extends ConductorAccess implements Conductor
 
 
     @Override
-    public List<MediaItemDesc> getNavItems(String mediaSource, String reference) throws RemoteException {
+    public List<MediaItemDesc> getNavItems(String mediaSource, MediaItemDesc reference) throws RemoteException {
         List<MediaItemDesc> itemDescriptions = new ArrayList<MediaItemDesc>();
-        log.info("Receive RMI request for nav items for media source '" + mediaSource + "' at " + reference);
+        log.info("Received RMI request for nav items for media source '" + mediaSource + "' at " + reference);
         List<MediaItem> items = conductor.getMediaItems(mediaSource, reference);
         if (items != null) {
             Iterator<MediaItem> it = items.iterator();

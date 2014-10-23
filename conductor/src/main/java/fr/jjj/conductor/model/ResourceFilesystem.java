@@ -12,11 +12,11 @@ import java.util.List;
 /**
  * Created by Jaunais on 22/08/2014.
  */
-public class ResourceFilesystem extends Resource{
+public class ResourceFilesystem extends Resource {
 
-    private static long idCounter=1;
+    private static long idCounter = 1;
 
-    private Log log= LogFactory.getLog(this.getClass());
+    private Log log = LogFactory.getLog(this.getClass());
 
     private String defaultLocation;
 
@@ -24,24 +24,26 @@ public class ResourceFilesystem extends Resource{
 
     private List<String> currentItems;
 
-    public ResourceFilesystem(String label, String defaultLocation)
-    {
+    public ResourceFilesystem(String label, String defaultLocation) {
         super(label);
-        this.defaultLocation=defaultLocation;
-        currentLocation=defaultLocation;
+        this.defaultLocation = defaultLocation;
+        currentLocation = defaultLocation;
     }
 
-    public List<MediaItem> getMediaItems(MediaItem requestedItem)
-    {
-        List<MediaItem> items=new ArrayList<MediaItem>();
-        File testDir=new File(currentLocation+"/"+requestedItem.getDescription().getTitle());
-        if(testDir.isDirectory())
-        {
-            items=getMediaItems(requestedItem.getDescription().getTitle());
+    public List<MediaItem> getMediaItems(MediaItem requestedItem) {
+        List<MediaItem> items = new ArrayList<MediaItem>();
+        String path;
+        if (requestedItem == null) {
+            path = defaultLocation;
+        } else {
+            path = currentLocation + "/" + requestedItem.getDescription().getTitle();
         }
-        else
-        {
-            items.add(requestedItem);
+        File testDir = new File(path);
+        if (testDir.isDirectory()) {
+            currentLocation = testDir.toPath().normalize().toString();
+            log.info("Current directory is now: " + currentLocation);
+            items = getMediaItems(testDir);
+
         }
         return items;
     }
@@ -50,45 +52,32 @@ public class ResourceFilesystem extends Resource{
         return defaultLocation;
     }
 
-    public List<MediaItem> getMediaItems(String reference)
-    {
-        List<MediaItem> items=new ArrayList<MediaItem>();
-        String location=reference;
-        if(location==null)
-        {
-            location="";
-        }
-        List<String> fileNames=getFileNamesInDir(location);
-        log.info("Found "+fileNames.size()+" items in "+location);
-        Iterator<String> it=fileNames.iterator();
-        while(it.hasNext())
-        {
-            String fileName=it.next();
-            log.info("name: "+currentLocation+"/"+fileName);
+    private List<MediaItem> getMediaItems(File directory) {
+        List<MediaItem> items = new ArrayList<MediaItem>();
+        List<String> fileNames = getFileNamesInDir(directory);
+        log.info("Found " + fileNames.size() + " items in " + directory.getAbsolutePath());
+        Iterator<String> it = fileNames.iterator();
+        while (it.hasNext()) {
+            String fileName = it.next();
+            log.info("name: " + currentLocation + "/" + fileName);
 //            if(!new File(currentLocation+"/"+fileName).isDirectory()) {
-                MediaItemDesc itemDescription = new MediaItemDesc(String.valueOf(idCounter++), fileName);
-                MediaItem item = new MediaItem(itemDescription, this, location);
-                log.info("Found: "+item.getDescription().getTitle());
-                items.add(item);
+            MediaItemDesc itemDescription = new MediaItemDesc(String.valueOf(idCounter++), fileName);
+            MediaItem item = new MediaItem(itemDescription, this, currentLocation);
+            log.info("Found: " + item.getDescription().getTitle());
+            items.add(item);
 //            }
         }
         return items;
     }
 
-    private  List<String> getFileNamesInDir(String directory)
-    {
-        log.info("Checking directory '"+directory+"' in "+currentLocation);
+    private List<String> getFileNamesInDir(File directory) {
+        log.info("Checking directory '" + directory + "'");
 
-        if(directory!=null) {
-            String newLocation=currentLocation+"/"+directory;
-            File dir = new File(newLocation);
-            log.info("File dir="+newLocation);
-            if (dir.isDirectory()) {
-                currentLocation=dir.toPath().normalize().toString();
-                log.info("Current directory is now: "+currentLocation);
-                currentItems = Arrays.asList(dir.list());
-            }
+        if (directory != null && directory.isDirectory()) {
+
+            currentItems = Arrays.asList(directory.list());
         }
+
         return currentItems;
     }
 
@@ -97,10 +86,10 @@ public class ResourceFilesystem extends Resource{
         String itemArg = null;
         switch (format) {
             case URL:
-                itemArg=currentLocation+"/"+item;
+                itemArg = currentLocation + "/" + item;
                 break;
             case NONE:
-            itemArg="";
+                itemArg = "";
                 break;
             default:
                 break;

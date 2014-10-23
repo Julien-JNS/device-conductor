@@ -67,6 +67,7 @@ public class PlayerHandler {
 //            }).start();
             try {
                 process.waitFor();
+                log.info("Player command ENDED: "+ builder.toString());
                 outputStream.close();
 //                inputStream.close();
             } catch (InterruptedException e) {
@@ -119,6 +120,7 @@ public class PlayerHandler {
                 pressKey("p");
                 break;
             case STOP:
+                pressKey("q");
                 process.destroy();
                 break;
             default:
@@ -131,11 +133,11 @@ public class PlayerHandler {
     private void pressKey(String key)
     {
         log.info("Process="+process);
-        OutputStream stream=process.getOutputStream();
-        log.info("Outputstream="+stream);
+        log.info("Outputstream="+outputStream);
+
         try {
-            stream.write(key.getBytes());
-            stream.flush();
+            outputStream.write(key.getBytes());
+            outputStream.flush();
 
         } catch (IOException e) {
             e.printStackTrace();

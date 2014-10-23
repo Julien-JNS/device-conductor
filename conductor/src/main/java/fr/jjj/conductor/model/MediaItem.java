@@ -3,7 +3,9 @@ package fr.jjj.conductor.model;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +27,8 @@ public class MediaItem {
     private Resource mediaSource;
 
     private String location;
+
+    private List<MediaItem> subItems;
 
     public MediaItem(MediaItemDesc description, Resource mediaSource, String location) {
         this.description = description;
@@ -52,8 +56,26 @@ public class MediaItem {
 
     static public MediaItem getMediaItem(MediaItemDesc description)
     {
-        log.info("Match description for "+description.getTitle()+" (id "+description.getId()+")?");
-        log.info("Registry conains key? "+registry.containsKey(description.getId()));
-        return registry.get(description.getId());
+        MediaItem item=null;
+        if(description!=null) {
+            log.info("Match description for " + description.getTitle() + " (id " + description.getId() + ")?");
+            log.info("Registry conains key? " + registry.containsKey(description.getId()));
+            item = registry.get(description.getId());
+        }
+        return item;
+    }
+
+    public void addSubItem(MediaItem item)
+    {
+        if(subItems==null)
+        {
+            subItems=new ArrayList<MediaItem>();
+        }
+        subItems.add(item);
+    }
+
+    public List<MediaItem> getSubItems()
+    {
+        return subItems;
     }
 }

@@ -56,11 +56,17 @@ public class DeviceAudioOut extends Device {
         Resource resource = item.getMediaSource();
         log.info("Resource: " + resource);
         List<MediaItem> items = resource.getMediaItems(item);
-        Iterator<MediaItem> it = items.iterator();
-        while (it.hasNext()) {
-            MediaItem newItem = it.next();
-            queue.add(newItem);
-            System.out.println("added in queue:" + newItem.getDescription().getTitle());
+        if(items.isEmpty())
+        {
+            queue.add(item);
+        }
+        else {
+            Iterator<MediaItem> it = items.iterator();
+            while (it.hasNext()) {
+                MediaItem newItem = it.next();
+                queue.add(newItem);
+                System.out.println("added in queue:" + newItem.getDescription().getTitle());
+            }
         }
         System.out.println("queue size:" + queue.size());
     }
@@ -94,16 +100,17 @@ public class DeviceAudioOut extends Device {
                 break;
             case PREV:
                 playingThread.jump(-1);
+                break;
             case STOP:
                 itemBeingPlayed = null;
                 keepPlaying = false;
                 playerHandler.command(DeviceDesc.Command.STOP);
+                playingThread=null;
                 break;
             default:
                 playerHandler.command(command);
                 break;
         }
-
     }
 
     private void updateStatus(MediaItem item) {

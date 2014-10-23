@@ -21,10 +21,10 @@ public abstract class Resource {
         return label;
     }
 
-    public List<MediaItem> getMediaItems(String reference) {
-
-        return null;
-    }
+//    public List<MediaItem> getMediaItems(MediaItemDesc reference) {
+//
+//        return null;
+//    }
 
     public abstract List<MediaItem> getMediaItems(MediaItem requestedItem);
 

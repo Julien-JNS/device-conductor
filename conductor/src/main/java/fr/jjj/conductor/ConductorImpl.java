@@ -4,6 +4,7 @@ package fr.jjj.conductor;
 import fr.jjj.conductor.activity.Activity;
 import fr.jjj.conductor.model.Device;
 import fr.jjj.conductor.model.MediaItem;
+import fr.jjj.conductor.model.MediaItemDesc;
 import fr.jjj.conductor.model.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -84,15 +85,18 @@ public class ConductorImpl implements Conductor {
 
 
     @Override
-    public List<MediaItem> getMediaItems(String mediaSource, String reference) {
+    public List<MediaItem> getMediaItems(String mediaSource, MediaItemDesc reference) {
         Resource resource=resources.get(mediaSource);
         log.info("Requesting nav items for resource "+resource.getLabel()+" (reference="+reference+")");
-        return resource.getMediaItems(reference);
+        MediaItem item=MediaItem.getMediaItem(reference);
+        return  resource.getMediaItems(item);
     }
 
     @Override
     public Resource getResource(String label) {
+//        if(label==null)
         return resources.get(label);
+
     }
 
     @Override

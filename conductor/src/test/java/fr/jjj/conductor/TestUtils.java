@@ -26,9 +26,9 @@ public class TestUtils {
             "[{'type': 'audio-out','label':'" + DEVICE_LABELS[0] + "','bridge':'testplayer'}," +
             "{'type': 'video-in','label':'" + DEVICE_LABELS[1] + "','bridge': 'xxx'}]," +
             "'resources':" +
-            "[{'type': 'filesystem','label': '"+RESOURCE_LABELS[0]+"','start': '"+FILESYSTEM_START+"'}," +
-            "{'type': 'googlemusic','label': '"+RESOURCE_LABELS[1]+"','start': 'Maryse'" +
-            "}]}";
+            "[{'type': 'filesystem','label': '"+RESOURCE_LABELS[0]+"','start': '"+FILESYSTEM_START+"'}" +
+          //  ",{'type': 'googlemusic','label': '"+RESOURCE_LABELS[1]+"','start': 'playlists'" + "}" +
+            "]}";
 
     static public void initializeConfig() {
         // create config file
