@@ -295,15 +295,27 @@ public class ResourceGoogleMusic extends Resource{
 
         System.out.println("kind="+plel.getKind());
         Iterator<PlaylistEntry> it3=plel.getData().getItems(). iterator();
+        System.err.println("nb entries="+plel.getData().getItems().size());
+            int i=0;
         while(it3.hasNext())
         {
             PlaylistEntry ple=it3.next();
+            System.out.println("get pl for id:"+ple.getPlaylistId());
             MediaItem pl=playlistMap.get(ple.getPlaylistId());
-            System.out.println(pl.getDescription().getTitle()+"("+ple.getId()+")");
+            System.out.println("pl:"+pl.getDescription().getTitle());
+            System.out.println((i++));
+            System.out.println("ple id:"+ple.getId());
+            System.out.println("track id:"+ple.getTrackId());
+            if(ple.getTrack()!=null) {
+                System.out.println("artist:" + ple.getTrack().getArtist());
+                System.out.println("album:" + ple.getTrack().getAlbum());
+                System.out.println("track title:" + ple.getTrack().getTitle());
 
-            MediaItem playlistItem=new MediaItem(new MediaItemDesc(ple.getTrackId(),ple.getTrack().getTitle()),this,getLocation());
-            pl.addSubItem(playlistItem);
-
+                MediaItem playlistItem = new MediaItem(new MediaItemDesc(ple.getTrackId(), ple.getTrack().getTitle()), this, getLocation());
+                System.out.println("item created");
+                pl.addSubItem(playlistItem);
+                System.out.println("item added");
+            }
         }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -314,6 +326,7 @@ public class ResourceGoogleMusic extends Resource{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.err.println("item.getSubItems().size:"+item.getSubItems().size());
         return item.getSubItems();
     }
 
@@ -343,8 +356,31 @@ public class ResourceGoogleMusic extends Resource{
 
         // URL url4 = new URL("https://play.google.com/music/play");
         String key = "27f7313e-f75d-445a-ac99-56386a5fe879";
-        //PYTHON (random string of 12 chars): salt = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(12))
-        String salt ="3jvqih1eylpn";
+        key="34ee7983-5ee6-4147-aa86-443ea062abf774493d6a-2a15-43fe-aace-e78566927585";
+        /**
+         * Secret key used to initialize the hashing method.
+         *
+         * Defined in gmusicapi (python) as:
+         * _s1 = base64.b64decode('VzeC4H4h+T2f0VI180nVX8x+Mb5HiTtGnKgH52Otj8ZCGDz9jRW'
+         *                        'yHb6QXK0JskSiOgzQfwTY5xgLLSdUSreaLVMsVVWfxfa8Rw==')
+         * _s2 = base64.b64decode('ZAPnhUkYwQ6y5DdQxWThbvhJHN8msQ1rqJw0ggKdufQjelrKuiG'
+         *                        'GJI30aswkgCWTDyHkTGK9ynlqTkJ5L4CiGGUabGeo8M6JTQ==')
+         * # bitwise and of _s1 and _s2 ascii, converted to string
+         * _key = ''.join([chr(ord(c1) ^ ord(c2)) for (c1, c2) in zip(_s1, _s2)])
+         * The hmac function took this key as a string
+         *
+         * If we decompose, we have the result of the 'bitwise and':
+         * byteKey=[ord(c1) ^ ord(c2) for (c1, c2) in zip(_s1, _s2)]
+         * --> 51,52,101,101,...,53,10
+         * This should be passe directly to the java equivalent that handle the key as a byte array...
+         * While the python converts each byte to a char (ASCII table):
+         * 51->3,52->4,...
+         * The hmac function takes this string and probably convert it back to ascii codes
+         */
+        byte[] byteKey=new byte[]{51,52,101,101,55,57,56,51,45,53,101,101,54,45,52,49,52,55,45,97,97,56,54,45,52,52,51,101,97,48,54,50,97,98,102,55,55,52,52,57,51,100,54,97,45,50,97,49,53,45,52,51,102,101,45,97,97,99,101,45,101,55,56,53,54,54,57,50,55,53,56,53,10};
+
+        // Random generation of the salt, a 12 chars string to be added to the track ID
+        String salt;
         char[] ALPHANUM_LOWERCASE = ("abcdefghijklmnopqrstuvwxyz" + "0123456789").toCharArray();
         char[] buf=new char[12];
         Random random=new Random();
@@ -355,7 +391,7 @@ public class ResourceGoogleMusic extends Resource{
         try {
             String HMAC_SHA1_ALGORITHM="HmacSHA1";
 // get an hmac_sha1 key from the raw key bytes
-            SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), HMAC_SHA1_ALGORITHM);
+            SecretKeySpec signingKey = new SecretKeySpec(/*key.getBytes()*/byteKey, HMAC_SHA1_ALGORITHM);
 
 // get an hmac_sha1 Mac instance and initialize with the signing keycookie
             Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
@@ -599,7 +635,17 @@ return null;
             return title;
         }
 
+        public String getArtist() {
+            return artist;
+        }
+
+        public String getAlbum() {
+            return album;
+        }
+
         private String title;
+        private String artist;
+        private String album;
     }
 
     class URLs
