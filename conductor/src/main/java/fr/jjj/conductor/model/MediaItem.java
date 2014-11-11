@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Jaunais on 09/09/2014.
- */
 public class MediaItem {
 
     static private Map<String,MediaItem> registry;
@@ -26,11 +23,11 @@ public class MediaItem {
 
     private Resource mediaSource;
 
-    private String location;
+    private List<MediaItem> location;
 
     private List<MediaItem> subItems;
 
-    public MediaItem(MediaItemDesc description, Resource mediaSource, String location) {
+    public MediaItem(MediaItemDesc description, Resource mediaSource, List<MediaItem> location) {
         this.description = description;
         this.mediaSource=mediaSource;
         this.location=location;
@@ -45,7 +42,7 @@ public class MediaItem {
         return mediaSource;
     }
 
-    public String getLocation() {
+    public List<MediaItem> getLocation() {
         return location;
     }
 

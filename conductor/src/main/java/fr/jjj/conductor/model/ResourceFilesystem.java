@@ -21,31 +21,29 @@ public class ResourceFilesystem extends Resource {
 
     private String defaultLocation;
 
-    private String currentLocation;
+//    private String currentLocation;
 
     private List<String> currentItems;
 
     public ResourceFilesystem(String label, String defaultLocation) {
         super(label);
         this.defaultLocation = defaultLocation;
-        currentLocation = defaultLocation;
+//        currentLocation = defaultLocation;
     }
 
     public List<MediaItem> getMediaItems(MediaItem requestedItem) {
         List<MediaItem> items = new ArrayList<MediaItem>();
-        String path;
-        if (requestedItem == null) {
-            path = defaultLocation;
-        } else {
-            path = currentLocation + "/" + requestedItem.getDescription().getTitle();
-        }
-        File testDir = new File(path);
-        if (testDir.isDirectory()) {
-            currentLocation = testDir.toPath().normalize().toString();
-            log.info("Current directory is now: " + currentLocation);
-            items = getMediaItems(testDir);
+        List<MediaItem> itemsLocation;
 
+        if (requestedItem == null) {
+            itemsLocation=new ArrayList<MediaItem>();
+        } else {
+            itemsLocation = requestedItem.getLocation();
+            itemsLocation.add(requestedItem);
         }
+
+
+            items = getMediaItems(itemsLocation);
         return items;
     }
 
@@ -53,20 +51,24 @@ public class ResourceFilesystem extends Resource {
         return defaultLocation;
     }
 
-    private List<MediaItem> getMediaItems(File directory) {
+    private List<MediaItem> getMediaItems(List<MediaItem> itemsLocation) {
         List<MediaItem> items = new ArrayList<MediaItem>();
-        List<String> fileNames = getFileNamesInDir(directory);
-        log.info("Found " + fileNames.size() + " items in " + directory.getAbsolutePath());
-        Iterator<String> it = fileNames.iterator();
-        while (it.hasNext()) {
-            String fileName = it.next();
-            log.info("name: " + currentLocation + "/" + fileName);
-//            if(!new File(currentLocation+"/"+fileName).isDirectory()) {
-            MediaItemDesc itemDescription = new MediaItemDesc(String.valueOf(idCounter++), fileName);
-            MediaItem item = new MediaItem(itemDescription, this, currentLocation);
-            log.info("Found: " + item.getDescription().getTitle());
-            items.add(item);
-//            }
+
+        String path=convertLocationToPath(itemsLocation);
+        log.info("Looking for media items in " + path);
+        File testDir = new File(path);
+        if (testDir.isDirectory()) {
+
+            List<String> fileNames = getFileNamesInDir(testDir);
+            log.info("Found " + fileNames.size() + " items in " + testDir.getAbsolutePath());
+            Iterator<String> it = fileNames.iterator();
+            while (it.hasNext()) {
+                String fileName = it.next();
+                MediaItemDesc itemDescription = new MediaItemDesc(String.valueOf(idCounter++), fileName);
+                MediaItem item = new MediaItem(itemDescription, this, itemsLocation);
+                log.info("Found: " + item.getDescription().getTitle());
+                items.add(item);
+            }
         }
         return items;
     }
@@ -87,7 +89,7 @@ public class ResourceFilesystem extends Resource {
         String itemArg = null;
         switch (format) {
             case URL:
-                itemArg = currentLocation + "/" + item.getDescription().getTitle();
+                itemArg = convertLocationToPath(item.getLocation()) + "/" + item.getDescription().getTitle();
                 break;
             case NONE:
                 itemArg = "";
@@ -98,4 +100,18 @@ public class ResourceFilesystem extends Resource {
         }
         return itemArg;
     }
+
+    private String convertLocationToPath(List<MediaItem> location)
+    {
+        StringBuilder strBuilder = new StringBuilder(defaultLocation);
+        for (MediaItem pathItem : location) {
+            strBuilder.append("/");
+            strBuilder.append(pathItem.getDescription().getTitle());
+        }
+        String path = strBuilder.toString();
+        return path;
+    }
+
+
+
 }

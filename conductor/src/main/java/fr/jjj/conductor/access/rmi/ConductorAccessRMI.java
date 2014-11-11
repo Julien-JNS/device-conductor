@@ -22,4 +22,5 @@ public interface ConductorAccessRMI extends Remote{
     DeviceAudioOutAccessRMI getDeviceAudioOutAccess(String deviceLabel) throws RemoteException;
 
     List<MediaItemDesc> getNavItems(String mediaSource, MediaItemDesc reference) throws RemoteException;
+
 }

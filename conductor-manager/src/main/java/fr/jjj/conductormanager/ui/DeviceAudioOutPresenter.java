@@ -31,6 +31,8 @@ public class DeviceAudioOutPresenter {
 
     private Map<String, MediaItemDesc> currentMediaItemsInQueue=new HashMap<String, MediaItemDesc>();
 
+    private List<MediaItemDesc> currentMediaPath=new ArrayList<MediaItemDesc>();
+
     public DeviceAudioOutPresenter(DeviceAudioOutView view) {
         this.view = view;
     }
@@ -87,19 +89,33 @@ public class DeviceAudioOutPresenter {
         this.mediaSource=mediaSource;
         log.info("Media source '" + mediaSource + "' selected for audio device " + deviceLabel + "...");
 
-        updateNavItems("");
+        updateNavItems(null);
     }
 
     public void navigationItemSelected(String refItem)
     {
         log.info("Selected nav items '" + refItem+"'");
-        updateNavItems(refItem);
+        MediaItemDesc refItemDesc=currentMediaItems.get(refItem);
+
+        updateNavItems(refItemDesc);
+        currentMediaPath.add(refItemDesc);
     }
 
-    private void updateNavItems(String refItem)
+    public void moveBackToParent()
     {
-        log.info("Updating nav items to '" + refItem+"'");
-        MediaItemDesc refItemDesc=currentMediaItems.get(refItem);
+        log.info("Move back to parent...");
+        MediaItemDesc parentDesc=null;
+        if(currentMediaPath.size()>1) {
+            currentMediaPath.remove(currentMediaPath.size() - 1);
+            parentDesc=currentMediaPath.get(currentMediaPath.size() - 1);
+        }
+        updateNavItems(parentDesc);
+    }
+
+    private void updateNavItems(MediaItemDesc refItemDesc)
+    {
+        log.info("Updating nav items to '" + (refItemDesc==null?"":refItemDesc.getTitle()+"'"));
+
         ConductorAccessRMI access = getConductorAccess();
 
         try {

@@ -56,7 +56,7 @@ public class DeviceAudioOut extends Device {
         Resource resource = item.getMediaSource();
         log.info("Resource: " + resource);
         List<MediaItem> items = resource.getMediaItems(item);
-        if(items.isEmpty())
+        if(items==null || items.isEmpty())
         {
             queue.add(item);
         }

@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,6 +17,8 @@ public class DeviceAudioOutTest {
     private static DeviceAudioOut device;
 
     private static Resource resource;
+
+    private static List<MediaItem> location=new ArrayList<MediaItem>();
 
     @Mock
     DeviceAudioOutListener listener;
@@ -36,8 +39,8 @@ public class DeviceAudioOutTest {
         List<MediaItem> testedQueue=device.getQueue();
         assertEquals("Empty queue",testedQueue.size(),0);
 
-        device.addToQueue(new MediaItem(new MediaItemDesc("1","Chanson 1"),resource,""));
-        device.addToQueue(new MediaItem(new MediaItemDesc("2","Chanson 2"),resource,""));
+        device.addToQueue(new MediaItem(new MediaItemDesc("1","Chanson 1"),resource,location));
+        device.addToQueue(new MediaItem(new MediaItemDesc("2","Chanson 2"),resource,location));
 
         Iterator<MediaItem> itItem = testedQueue.iterator();
 
@@ -48,8 +51,8 @@ public class DeviceAudioOutTest {
 
     @Test
     public void testPlay() throws Exception {
-        MediaItem item1 = new MediaItem(new MediaItemDesc("1", "Chanson 1"), resource, "");
-        MediaItem item2 = new MediaItem(new MediaItemDesc("2", "Chanson 2"), resource, "");
+        MediaItem item1 = new MediaItem(new MediaItemDesc("1", "Chanson 1"), resource, location);
+        MediaItem item2 = new MediaItem(new MediaItemDesc("2", "Chanson 2"), resource, location);
 
         device.addToQueue(item1);
         device.addToQueue(item2);
@@ -66,8 +69,8 @@ public class DeviceAudioOutTest {
 
     @Test
     public void testNext() throws Exception {
-        MediaItem item1 = new MediaItem(new MediaItemDesc("1", "Chanson 1"), resource, "");
-        MediaItem item2 = new MediaItem(new MediaItemDesc("2", "Chanson 2"), resource, "");
+        MediaItem item1 = new MediaItem(new MediaItemDesc("1", "Chanson 1"), resource, location);
+        MediaItem item2 = new MediaItem(new MediaItemDesc("2", "Chanson 2"), resource, location);
 
         device.addToQueue(item1);
         device.addToQueue(item2);
@@ -87,9 +90,9 @@ public class DeviceAudioOutTest {
 
     @Test
     public void testPrevious() throws Exception {
-        MediaItem item1 = new MediaItem(new MediaItemDesc("1", "Chanson 1"), resource, "");
-        MediaItem item2 = new MediaItem(new MediaItemDesc("2", "Chanson 2"), resource, "");
-        MediaItem item3 = new MediaItem(new MediaItemDesc("3", "Chanson 3"), resource, "");
+        MediaItem item1 = new MediaItem(new MediaItemDesc("1", "Chanson 1"), resource, location);
+        MediaItem item2 = new MediaItem(new MediaItemDesc("2", "Chanson 2"), resource, location);
+        MediaItem item3 = new MediaItem(new MediaItemDesc("3", "Chanson 3"), resource, location);
 
         device.addToQueue(item1);
         device.addToQueue(item2);
